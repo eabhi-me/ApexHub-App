@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Eye, EyeOff, Sparkles, CheckSquare, Wallet, GraduationCap, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Sparkles, CheckSquare, Wallet, GraduationCap, ArrowRight, KeyRound, Copy } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
@@ -25,6 +25,14 @@ const Login = () => {
       ...prev,
       [e.target.name]: e.target.value
     }));
+  };
+
+  const handleAutofillDemo = () => {
+    setFormData({
+      email: 'demo@example.com',
+      password: 'password123'
+    });
+    toast.info('Demo credentials auto-filled!');
   };
 
   const handleSubmit = async (e) => {
@@ -70,7 +78,31 @@ const Login = () => {
             ApexHub
           </h2>
           <p className="text-sm text-slate-400">
-            Productivity Suite: Tasks, Finance Tracker & Study Planner
+            Productivity Suite: Tasks, Finance Tracker (₹) & Study Planner
+          </p>
+        </div>
+
+        {/* Demo Credentials Box */}
+        <div className="bg-gradient-to-r from-indigo-950/80 to-slate-900/80 border border-indigo-500/30 rounded-2xl p-4 text-xs space-y-2 shadow-lg backdrop-blur-md">
+          <div className="flex items-center justify-between">
+            <span className="font-bold text-indigo-300 flex items-center gap-1.5">
+              <KeyRound className="h-4 w-4 text-amber-400" />
+              Demo Account (Preloaded Sample Data)
+            </span>
+            <button
+              type="button"
+              onClick={handleAutofillDemo}
+              className="px-2.5 py-1 rounded-lg bg-indigo-600/40 hover:bg-indigo-600 text-indigo-200 hover:text-white font-semibold flex items-center gap-1 transition-all"
+            >
+              <Copy className="h-3 w-3" /> Auto-fill
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-slate-300 bg-slate-950/60 p-2.5 rounded-xl font-mono text-[11px]">
+            <div>Email: <strong className="text-indigo-200">demo@example.com</strong></div>
+            <div>Password: <strong className="text-indigo-200">password123</strong></div>
+          </div>
+          <p className="text-[11px] text-slate-400">
+            ✨ Preloaded with sample INR expenses, budgets, course syllabi & pomodoro sessions. Newly registered accounts get their own clean workspace.
           </p>
         </div>
 
@@ -137,7 +169,7 @@ const Login = () => {
           <div className="relative flex items-center justify-center">
             <div className="border-t border-slate-800 w-full" />
             <span className="bg-slate-900 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
-              Or Instant Access
+              Or Instant 1-Click
             </span>
             <div className="border-t border-slate-800 w-full" />
           </div>
@@ -153,9 +185,9 @@ const Login = () => {
 
           <div className="text-center pt-2">
             <span className="text-xs text-slate-400">
-              Don't have an account?{' '}
+              New user?{' '}
               <Link to="/register" className="font-semibold text-indigo-400 hover:underline">
-                Create one now
+                Create your own private workspace
               </Link>
             </span>
           </div>
@@ -169,7 +201,7 @@ const Login = () => {
           </div>
           <div className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-slate-900/50 border border-slate-800">
             <Wallet className="h-3.5 w-3.5 text-emerald-400" />
-            <span>Budget & Goals</span>
+            <span>INR (₹) Budgets</span>
           </div>
           <div className="flex items-center justify-center gap-1.5 p-2 rounded-xl bg-slate-900/50 border border-slate-800">
             <GraduationCap className="h-3.5 w-3.5 text-violet-400" />

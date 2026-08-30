@@ -113,11 +113,14 @@ const INITIAL_SESSIONS = [
 ];
 
 export const StudyProvider = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [subjects, setSubjects] = useState([]);
   const [deadlines, setDeadlines] = useState([]);
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const isDemoUser = user?.email === 'demo@example.com' || user?.email === 'alex.carter@example.com' || user?._id === 'demo-user-id';
+  const userKey = user?.email || user?._id || 'guest';
 
   // Pomodoro State
   const [timerMode, setTimerMode] = useState('focus'); // focus (25m), shortBreak (5m), longBreak (15m)
@@ -164,7 +167,12 @@ export const StudyProvider = ({ children }) => {
 
   // Fetch Study Data
   const fetchStudyData = useCallback(async () => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated) {
+      setSubjects([]);
+      setDeadlines([]);
+      setSessions([]);
+      return;
+    }
     setLoading(true);
     try {
       const [subjRes, dlRes, sessRes] = await Promise.all([
@@ -176,47 +184,86 @@ export const StudyProvider = ({ children }) => {
       if (subjRes.data && subjRes.data.length > 0) {
         setSubjects(subjRes.data);
       } else {
-        const local = localStorage.getItem('study_subjects');
-        setSubjects(local ? JSON.parse(local) : INITIAL_SUBJECTS);
+        const local = localStorage.getItem(`study_subjects_${userKey}`);
+        if (local) {
+          setSubjects(JSON.parse(local));
+        } else if (isDemoUser) {
+          setSubjects(INITIAL_SUBJECTS);
+        } else {
+          setSubjects([]);
+        }
       }
 
       if (dlRes.data && dlRes.data.length > 0) {
         setDeadlines(dlRes.data);
       } else {
-        const local = localStorage.getItem('study_deadlines');
-        setDeadlines(local ? JSON.parse(local) : INITIAL_DEADLINES);
+        const local = localStorage.getItem(`study_deadlines_${userKey}`);
+        if (local) {
+          setDeadlines(JSON.parse(local));
+        } else if (isDemoUser) {
+          setDeadlines(INITIAL_DEADLINES);
+        } else {
+          setDeadlines([]);
+        }
       }
 
       if (sessRes.data && sessRes.data.length > 0) {
         setSessions(sessRes.data);
       } else {
-        const local = localStorage.getItem('study_sessions');
-        setSessions(local ? JSON.parse(local) : INITIAL_SESSIONS);
+        const local = localStorage.getItem(`study_sessions_${userKey}`);
+        if (local) {
+          setSessions(JSON.parse(local));
+        } else if (isDemoUser) {
+          setSessions(INITIAL_SESSIONS);
+        } else {
+          setSessions([]);
+        }
       }
     } catch (error) {
-      console.warn('Using offline study data fallback:', error);
-      const localSub = localStorage.getItem('study_subjects');
-      const localDl = localStorage.getItem('study_deadlines');
-      const localSess = localStorage.getItem('study_sessions');
+      const localSub = localStorage.getItem(`study_subjects_${userKey}`);
+      const localDl = localStorage.getItem(`study_deadlines_${userKey}`);
+      const localSess = localStorage.getItem(`study_sessions_${userKey}`);
 
-      setSubjects(localSub ? JSON.parse(localSub) : INITIAL_SUBJECTS);
-      setDeadlines(localDl ? JSON.parse(localDl) : INITIAL_DEADLINES);
-      setSessions(localSess ? JSON.parse(localSess) : INITIAL_SESSIONS);
+      if (localSub) {
+        setSubjects(JSON.parse(localSub));
+      } else if (isDemoUser) {
+        setSubjects(INITIAL_SUBJECTS);
+      } else {
+        setSubjects([]);
+      }
+
+      if (localDl) {
+        setDeadlines(JSON.parse(localDl));
+      } else if (isDemoUser) {
+        setDeadlines(INITIAL_DEADLINES);
+      } else {
+        setDeadlines([]);
+      }
+
+      if (localSess) {
+        setSessions(JSON.parse(localSess));
+      } else if (isDemoUser) {
+        setSessions(INITIAL_SESSIONS);
+      } else {
+        setSessions([]);
+      }
     } finally {
       setLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isDemoUser, userKey]);
 
   useEffect(() => {
     fetchStudyData();
   }, [fetchStudyData]);
 
-  // Persist offline cache
+  // Persist offline cache per user
   useEffect(() => {
-    if (subjects.length > 0) localStorage.setItem('study_subjects', JSON.stringify(subjects));
-    if (deadlines.length > 0) localStorage.setItem('study_deadlines', JSON.stringify(deadlines));
-    if (sessions.length > 0) localStorage.setItem('study_sessions', JSON.stringify(sessions));
-  }, [subjects, deadlines, sessions]);
+    if (isAuthenticated) {
+      localStorage.setItem(`study_subjects_${userKey}`, JSON.stringify(subjects));
+      localStorage.setItem(`study_deadlines_${userKey}`, JSON.stringify(deadlines));
+      localStorage.setItem(`study_sessions_${userKey}`, JSON.stringify(sessions));
+    }
+  }, [subjects, deadlines, sessions, isAuthenticated, userKey]);
 
   // Log a completed study session
   const logStudySession = useCallback(async (durationMins, topic, subjectId) => {

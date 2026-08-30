@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   TrendingUp, 
   TrendingDown, 
-  DollarSign, 
   Plus, 
   Download, 
   Search, 
@@ -154,7 +153,7 @@ const FinanceTracker = () => {
             <span>Finance & Expense Tracker</span>
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Monitor cashflow, manage category budgets, and reach your savings goals.
+            Monitor cashflow, manage category budgets, and reach your savings goals in Indian Rupee (₹).
           </p>
         </div>
 
@@ -197,13 +196,13 @@ const FinanceTracker = () => {
         <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">Total Net Balance</span>
-            <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center">
-              <DollarSign className="h-4 w-4 text-emerald-400" />
+            <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center font-bold text-emerald-400">
+              ₹
             </div>
           </div>
           <div className="mt-4">
             <div className="text-3xl sm:text-4xl font-black font-mono">
-              ${netBalance.toLocaleString()}
+              ₹{netBalance.toLocaleString()}
             </div>
             <div className="mt-2 flex items-center text-xs text-indigo-200">
               <span className={`inline-flex items-center font-bold mr-1.5 ${netBalance >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
@@ -225,7 +224,7 @@ const FinanceTracker = () => {
           </div>
           <div className="mt-4">
             <div className="text-2xl sm:text-3xl font-black text-emerald-600 font-mono">
-              +${totalIncome.toLocaleString()}
+              +₹{totalIncome.toLocaleString()}
             </div>
             <div className="mt-2 text-xs text-slate-500">
               {transactions.filter(t => t.type === 'income').length} income transactions
@@ -243,7 +242,7 @@ const FinanceTracker = () => {
           </div>
           <div className="mt-4">
             <div className="text-2xl sm:text-3xl font-black text-rose-600 font-mono">
-              -${totalExpense.toLocaleString()}
+              -₹{totalExpense.toLocaleString()}
             </div>
             <div className="mt-2 text-xs text-slate-500">
               {transactions.filter(t => t.type === 'expense').length} expense transactions
@@ -261,7 +260,7 @@ const FinanceTracker = () => {
           </div>
           <div className="mt-4">
             <div className="text-2xl sm:text-3xl font-black text-violet-600 font-mono">
-              ${goals.reduce((acc, g) => acc + (Number(g.currentAmount) || 0), 0).toLocaleString()}
+              ₹{goals.reduce((acc, g) => acc + (Number(g.currentAmount) || 0), 0).toLocaleString()}
             </div>
             <div className="mt-2 text-xs text-slate-500">
               Across {goals.length} active savings goals
@@ -319,9 +318,9 @@ const FinanceTracker = () => {
                       </div>
                       <div className="text-slate-600">
                         <span className={`font-bold ${isOverBudget ? 'text-rose-600' : 'text-slate-900'}`}>
-                          ${spent.toLocaleString()}
+                          ₹{spent.toLocaleString()}
                         </span>
-                        <span className="text-slate-400 font-normal"> / ${b.monthlyLimit.toLocaleString()}</span>
+                        <span className="text-slate-400 font-normal"> / ₹{b.monthlyLimit.toLocaleString()}</span>
                       </div>
                     </div>
 
@@ -339,8 +338,8 @@ const FinanceTracker = () => {
                       <span>{percentage}% spent</span>
                       <span>
                         {isOverBudget 
-                          ? `$${(spent - b.monthlyLimit).toLocaleString()} over limit` 
-                          : `$${(b.monthlyLimit - spent).toLocaleString()} remaining`}
+                          ? `₹${(spent - b.monthlyLimit).toLocaleString()} over limit` 
+                          : `₹${(b.monthlyLimit - spent).toLocaleString()} remaining`}
                       </span>
                     </div>
                   </div>
@@ -417,8 +416,8 @@ const FinanceTracker = () => {
 
                     <div>
                       <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                        <span>${g.currentAmount.toLocaleString()} saved</span>
-                        <span className="text-slate-400">${g.targetAmount.toLocaleString()} target ({percentage}%)</span>
+                        <span>₹{g.currentAmount.toLocaleString()} saved</span>
+                        <span className="text-slate-400">₹{g.targetAmount.toLocaleString()} target ({percentage}%)</span>
                       </div>
                       <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
                         <div
@@ -446,7 +445,7 @@ const FinanceTracker = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
           <div>
             <h3 className="text-lg font-bold text-slate-900">Transaction History</h3>
-            <p className="text-xs text-slate-500">All recorded incomes and expenditures</p>
+            <p className="text-xs text-slate-500">All recorded incomes and expenditures in INR</p>
           </div>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -501,7 +500,7 @@ const FinanceTracker = () => {
                 <th className="pb-3 px-3">Category</th>
                 <th className="pb-3 px-3">Date</th>
                 <th className="pb-3 px-3">Payment</th>
-                <th className="pb-3 px-3 text-right">Amount</th>
+                <th className="pb-3 px-3 text-right">Amount (₹)</th>
                 <th className="pb-3 px-3 text-center">Action</th>
               </tr>
             </thead>
@@ -509,7 +508,7 @@ const FinanceTracker = () => {
               {filteredTransactions.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="py-10 text-center text-slate-400 text-sm">
-                    No transactions found matching your criteria.
+                    No transactions recorded yet. Click "Add Transaction" to create your first entry!
                   </td>
                 </tr>
               ) : (
@@ -568,7 +567,7 @@ const FinanceTracker = () => {
                       {/* Amount */}
                       <td className="py-3.5 px-3 text-right font-bold font-mono">
                         <span className={isIncome ? 'text-emerald-600' : 'text-slate-900'}>
-                          {isIncome ? '+' : '-'}${Number(tx.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                          {isIncome ? '+' : '-'}₹{Number(tx.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
                       </td>
 
@@ -639,10 +638,10 @@ const FinanceTracker = () => {
               {/* Amount */}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Amount ($) *
+                  Amount (₹) *
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
                   <input
                     type="number"
                     step="0.01"
@@ -678,7 +677,7 @@ const FinanceTracker = () => {
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. Weekly Groceries, Client Milestone"
+                  placeholder="e.g. Monthly Grocery, Client Milestone, Electricity Bill"
                   value={txForm.description}
                   onChange={(e) => setTxForm({ ...txForm, description: e.target.value })}
                   className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
@@ -708,9 +707,9 @@ const FinanceTracker = () => {
                     onChange={(e) => setTxForm({ ...txForm, paymentMethod: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
                   >
-                    <option value="UPI / Bank">UPI / Bank</option>
-                    <option value="Credit Card">Credit Card</option>
+                    <option value="UPI / Bank">UPI / Net Banking</option>
                     <option value="Debit Card">Debit Card</option>
+                    <option value="Credit Card">Credit Card</option>
                     <option value="Cash">Cash</option>
                     <option value="Crypto">Crypto</option>
                     <option value="Other">Other</option>
@@ -782,15 +781,15 @@ const FinanceTracker = () => {
 
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Monthly Limit ($) *
+                  Monthly Limit (₹) *
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
                   <input
                     type="number"
                     step="1"
                     required
-                    placeholder="500"
+                    placeholder="10000"
                     value={budgetForm.monthlyLimit}
                     onChange={(e) => setBudgetForm({ ...budgetForm, monthlyLimit: e.target.value })}
                     className="w-full pl-8 pr-4 py-2.5 text-base font-bold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
@@ -837,7 +836,7 @@ const FinanceTracker = () => {
                 <input
                   type="text"
                   required
-                  placeholder="e.g. New Laptop, Emergency Fund"
+                  placeholder="e.g. New Laptop, Emergency Fund, Trip"
                   value={goalForm.title}
                   onChange={(e) => setGoalForm({ ...goalForm, title: e.target.value })}
                   className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
@@ -847,12 +846,12 @@ const FinanceTracker = () => {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    Target Amount ($) *
+                    Target Amount (₹) *
                   </label>
                   <input
                     type="number"
                     required
-                    placeholder="2000"
+                    placeholder="100000"
                     value={goalForm.targetAmount}
                     onChange={(e) => setGoalForm({ ...goalForm, targetAmount: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm font-semibold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
@@ -860,11 +859,11 @@ const FinanceTracker = () => {
                 </div>
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    Already Saved ($)
+                    Already Saved (₹)
                   </label>
                   <input
                     type="number"
-                    placeholder="500"
+                    placeholder="25000"
                     value={goalForm.currentAmount}
                     onChange={(e) => setGoalForm({ ...goalForm, currentAmount: e.target.value })}
                     className="w-full px-3.5 py-2 text-sm font-semibold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
@@ -938,16 +937,16 @@ const FinanceTracker = () => {
             <form onSubmit={handleDepositSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Deposit Amount ($) *
+                  Deposit Amount (₹) *
                 </label>
                 <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">$</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
                   <input
                     type="number"
                     step="1"
                     required
                     autoFocus
-                    placeholder="100"
+                    placeholder="5000"
                     value={depositAmount}
                     onChange={(e) => setDepositAmount(e.target.value)}
                     className="w-full pl-8 pr-4 py-2.5 text-lg font-bold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"

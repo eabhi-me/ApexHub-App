@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Eye, EyeOff, Sparkles, UserPlus, ArrowRight } from 'lucide-react';
+import { Eye, EyeOff, Sparkles, UserPlus, ArrowRight, KeyRound } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Register = () => {
@@ -53,7 +53,7 @@ const Register = () => {
       );
       
       if (result.success) {
-        toast.success('Registration successful! Welcome to ApexHub.');
+        toast.success('Registration successful! Welcome to your private workspace.');
         navigate('/overview');
       } else {
         toast.error(result.message);
@@ -86,11 +86,22 @@ const Register = () => {
             <UserPlus className="h-7 w-7" />
           </div>
           <h2 className="text-3xl font-black text-white tracking-tight">
-            Join ApexHub
+            Create Your Account
           </h2>
           <p className="text-sm text-slate-400">
-            Create your account to start managing tasks, finances & studies
+            Get your own clean, private workspace for tasks, INR finances & studies
           </p>
+        </div>
+
+        {/* Info Banner */}
+        <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-3 text-xs text-slate-400 flex items-center justify-between">
+          <span className="flex items-center gap-1.5 text-indigo-300 font-semibold">
+            <KeyRound className="h-4 w-4 text-amber-400" />
+            Want to test sample data first?
+          </span>
+          <Link to="/login" className="text-indigo-400 font-bold hover:underline">
+            Use Demo Login →
+          </Link>
         </div>
 
         {/* Card */}
@@ -107,7 +118,7 @@ const Register = () => {
                 required
                 value={formData.username}
                 onChange={handleChange}
-                placeholder="e.g. AlexCarter"
+                placeholder="e.g. Dhairya"
                 className="w-full px-4 py-3 text-sm bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>

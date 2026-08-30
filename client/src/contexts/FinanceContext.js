@@ -13,12 +13,14 @@ export const useFinance = () => {
   return context;
 };
 
-// Initial realistic sample data for smooth first-time experience
+export const CURRENCY_SYMBOL = '₹';
+
+// Initial realistic INR sample data for Demo User
 const INITIAL_TRANSACTIONS = [
   {
     _id: 'tx-1',
     type: 'income',
-    amount: 3200,
+    amount: 45000,
     category: 'Salary',
     description: 'Monthly Tech Internship Stipend',
     paymentMethod: 'UPI / Bank',
@@ -29,7 +31,7 @@ const INITIAL_TRANSACTIONS = [
   {
     _id: 'tx-2',
     type: 'expense',
-    amount: 145,
+    amount: 3200,
     category: 'Food & Dining',
     description: 'Weekly grocery & healthy snacks',
     paymentMethod: 'Credit Card',
@@ -40,7 +42,7 @@ const INITIAL_TRANSACTIONS = [
   {
     _id: 'tx-3',
     type: 'expense',
-    amount: 80,
+    amount: 1999,
     category: 'Education',
     description: 'React & Algorithm Mastery Course',
     paymentMethod: 'Debit Card',
@@ -51,7 +53,7 @@ const INITIAL_TRANSACTIONS = [
   {
     _id: 'tx-4',
     type: 'expense',
-    amount: 45,
+    amount: 699,
     category: 'Entertainment',
     description: 'Spotify & Cloud storage subs',
     paymentMethod: 'UPI / Bank',
@@ -62,7 +64,7 @@ const INITIAL_TRANSACTIONS = [
   {
     _id: 'tx-5',
     type: 'income',
-    amount: 450,
+    amount: 12500,
     category: 'Freelance',
     description: 'Landing Page UI design gig',
     paymentMethod: 'UPI / Bank',
@@ -73,7 +75,7 @@ const INITIAL_TRANSACTIONS = [
   {
     _id: 'tx-6',
     type: 'expense',
-    amount: 65,
+    amount: 1450,
     category: 'Transportation',
     description: 'Metro pass & ride share',
     paymentMethod: 'Cash',
@@ -84,16 +86,16 @@ const INITIAL_TRANSACTIONS = [
 ];
 
 const INITIAL_BUDGETS = [
-  { _id: 'b-1', category: 'Food & Dining', monthlyLimit: 500, monthYear: new Date().toISOString().slice(0, 7) },
-  { _id: 'b-2', category: 'Education', monthlyLimit: 200, monthYear: new Date().toISOString().slice(0, 7) },
-  { _id: 'b-3', category: 'Entertainment', monthlyLimit: 120, monthYear: new Date().toISOString().slice(0, 7) },
-  { _id: 'b-4', category: 'Shopping', monthlyLimit: 250, monthYear: new Date().toISOString().slice(0, 7) }
+  { _id: 'b-1', category: 'Food & Dining', monthlyLimit: 10000, monthYear: new Date().toISOString().slice(0, 7) },
+  { _id: 'b-2', category: 'Education', monthlyLimit: 5000, monthYear: new Date().toISOString().slice(0, 7) },
+  { _id: 'b-3', category: 'Entertainment', monthlyLimit: 3000, monthYear: new Date().toISOString().slice(0, 7) },
+  { _id: 'b-4', category: 'Shopping', monthlyLimit: 6000, monthYear: new Date().toISOString().slice(0, 7) }
 ];
 
 const INITIAL_GOALS = [
-  { _id: 'g-1', title: 'New M3 MacBook Pro', targetAmount: 2200, currentAmount: 1450, targetDate: '2026-12-15', color: '#6366f1', icon: 'Laptop' },
-  { _id: 'g-2', title: 'Emergency Fund', targetAmount: 3000, currentAmount: 2100, targetDate: '2027-01-01', color: '#10b981', icon: 'Shield' },
-  { _id: 'g-3', title: 'Hackathon Travel & Stay', targetAmount: 600, currentAmount: 420, targetDate: '2026-10-20', color: '#f59e0b', icon: 'Plane' }
+  { _id: 'g-1', title: 'New M3 MacBook Pro', targetAmount: 125000, currentAmount: 85000, targetDate: '2026-12-15', color: '#6366f1', icon: 'Laptop' },
+  { _id: 'g-2', title: 'Emergency Fund', targetAmount: 100000, currentAmount: 65000, targetDate: '2027-01-01', color: '#10b981', icon: 'Shield' },
+  { _id: 'g-3', title: 'Hackathon Travel & Stay', targetAmount: 15000, currentAmount: 10500, targetDate: '2026-10-20', color: '#f59e0b', icon: 'Plane' }
 ];
 
 export const CATEGORIES = {
@@ -119,16 +121,25 @@ export const CATEGORIES = {
 };
 
 export const FinanceProvider = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [budgets, setBudgets] = useState([]);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  // Load state from API or localStorage
+  const isDemoUser = user?.email === 'demo@example.com' || user?.email === 'alex.carter@example.com' || user?._id === 'demo-user-id';
+  const userKey = user?.email || user?._id || 'guest';
+
+  // Load state from API or user-isolated localStorage
   const fetchFinanceData = useCallback(async () => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated) {
+      setTransactions([]);
+      setBudgets([]);
+      setGoals([]);
+      return;
+    }
     setLoading(true);
+
     try {
       const [txRes, bRes, gRes] = await Promise.all([
         api.get('/finance/transactions'),
@@ -136,56 +147,90 @@ export const FinanceProvider = ({ children }) => {
         api.get('/finance/goals')
       ]);
 
+      // If backend has items, use them
       if (txRes.data && txRes.data.length > 0) {
         setTransactions(txRes.data);
       } else {
-        const localTxs = localStorage.getItem('finance_txs');
-        setTransactions(localTxs ? JSON.parse(localTxs) : INITIAL_TRANSACTIONS);
+        const localTxs = localStorage.getItem(`finance_txs_${userKey}`);
+        if (localTxs) {
+          setTransactions(JSON.parse(localTxs));
+        } else if (isDemoUser) {
+          setTransactions(INITIAL_TRANSACTIONS);
+        } else {
+          setTransactions([]);
+        }
       }
 
       if (bRes.data && bRes.data.length > 0) {
         setBudgets(bRes.data);
       } else {
-        const localB = localStorage.getItem('finance_budgets');
-        setBudgets(localB ? JSON.parse(localB) : INITIAL_BUDGETS);
+        const localB = localStorage.getItem(`finance_budgets_${userKey}`);
+        if (localB) {
+          setBudgets(JSON.parse(localB));
+        } else if (isDemoUser) {
+          setBudgets(INITIAL_BUDGETS);
+        } else {
+          setBudgets([]);
+        }
       }
 
       if (gRes.data && gRes.data.length > 0) {
         setGoals(gRes.data);
       } else {
-        const localG = localStorage.getItem('finance_goals');
-        setGoals(localG ? JSON.parse(localG) : INITIAL_GOALS);
+        const localG = localStorage.getItem(`finance_goals_${userKey}`);
+        if (localG) {
+          setGoals(JSON.parse(localG));
+        } else if (isDemoUser) {
+          setGoals(INITIAL_GOALS);
+        } else {
+          setGoals([]);
+        }
       }
     } catch (error) {
-      console.warn('Backend finance endpoint warning, using offline persistence:', error);
-      const localTxs = localStorage.getItem('finance_txs');
-      const localB = localStorage.getItem('finance_budgets');
-      const localG = localStorage.getItem('finance_goals');
+      const localTxs = localStorage.getItem(`finance_txs_${userKey}`);
+      const localB = localStorage.getItem(`finance_budgets_${userKey}`);
+      const localG = localStorage.getItem(`finance_goals_${userKey}`);
 
-      setTransactions(localTxs ? JSON.parse(localTxs) : INITIAL_TRANSACTIONS);
-      setBudgets(localB ? JSON.parse(localB) : INITIAL_BUDGETS);
-      setGoals(localG ? JSON.parse(localG) : INITIAL_GOALS);
+      if (localTxs) {
+        setTransactions(JSON.parse(localTxs));
+      } else if (isDemoUser) {
+        setTransactions(INITIAL_TRANSACTIONS);
+      } else {
+        setTransactions([]);
+      }
+
+      if (localB) {
+        setBudgets(JSON.parse(localB));
+      } else if (isDemoUser) {
+        setBudgets(INITIAL_BUDGETS);
+      } else {
+        setBudgets([]);
+      }
+
+      if (localG) {
+        setGoals(JSON.parse(localG));
+      } else if (isDemoUser) {
+        setGoals(INITIAL_GOALS);
+      } else {
+        setGoals([]);
+      }
     } finally {
       setLoading(false);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isDemoUser, userKey]);
 
   useEffect(() => {
     fetchFinanceData();
   }, [fetchFinanceData]);
 
-  // Persist locally for instant responsiveness
+  // Persist locally under user-isolated key
   useEffect(() => {
-    if (transactions.length > 0) {
-      localStorage.setItem('finance_txs', JSON.stringify(transactions));
+    if (isAuthenticated) {
+      localStorage.setItem(`finance_txs_${userKey}`, JSON.stringify(transactions));
+      localStorage.setItem(`finance_budgets_${userKey}`, JSON.stringify(budgets));
+      localStorage.setItem(`finance_goals_${userKey}`, JSON.stringify(goals));
     }
-    if (budgets.length > 0) {
-      localStorage.setItem('finance_budgets', JSON.stringify(budgets));
-    }
-    if (goals.length > 0) {
-      localStorage.setItem('finance_goals', JSON.stringify(goals));
-    }
-  }, [transactions, budgets, goals]);
+  }, [transactions, budgets, goals, isAuthenticated, userKey]);
 
   // Add Transaction
   const addTransaction = async (data) => {
@@ -218,9 +263,7 @@ export const FinanceProvider = ({ children }) => {
     try {
       try {
         await api.delete(`/finance/transactions/${id}`);
-      } catch (e) {
-        // Fallback local deletion
-      }
+      } catch (e) {}
       setTransactions(prev => prev.filter(t => t._id !== id));
       toast.success('Transaction removed');
       return { success: true };
@@ -285,7 +328,7 @@ export const FinanceProvider = ({ children }) => {
       } catch (e) {}
 
       setGoals(prev => prev.map(g => g._id === goalId ? { ...g, currentAmount: updatedAmount } : g));
-      toast.success(`Deposited $${amount} to ${goal.title}! 🎉`);
+      toast.success(`Deposited ₹${amount.toLocaleString()} to ${goal.title}! 🎉`);
       return { success: true };
     } catch (error) {
       toast.error('Failed to add funds');
@@ -330,7 +373,7 @@ export const FinanceProvider = ({ children }) => {
 
   // Export CSV
   const exportToCSV = () => {
-    const headers = ['Date,Type,Category,Description,Amount,Payment Method'];
+    const headers = ['Date,Type,Category,Description,Amount (INR),Payment Method'];
     const rows = transactions.map(t => 
       `"${new Date(t.date).toLocaleDateString()}","${t.type}","${t.category}","${(t.description || '').replace(/"/g, '""')}","${t.amount}","${t.paymentMethod}"`
     );
@@ -338,7 +381,7 @@ export const FinanceProvider = ({ children }) => {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Finance_Transactions_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute('download', `Finance_Transactions_INR_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -356,6 +399,7 @@ export const FinanceProvider = ({ children }) => {
     savingsRate,
     categoryExpenses,
     CATEGORIES,
+    CURRENCY_SYMBOL,
     addTransaction,
     deleteTransaction,
     setBudget,

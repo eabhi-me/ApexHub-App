@@ -131,7 +131,7 @@ const OverviewHub = () => {
           </div>
           <div className="mt-3">
             <div className="text-2xl font-black text-slate-900">
-              ${netBalance.toLocaleString()}
+              ₹{netBalance.toLocaleString()}
             </div>
             <div className="mt-1 flex items-center text-xs text-slate-500">
               <span className={`inline-flex items-center font-bold mr-1.5 ${netBalance >= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>
@@ -142,8 +142,8 @@ const OverviewHub = () => {
             </div>
           </div>
           <div className="mt-3 pt-3 border-t border-slate-100 flex justify-between text-[11px] text-slate-500">
-            <span>In: <strong className="text-emerald-600 font-semibold">+${totalIncome.toLocaleString()}</strong></span>
-            <span>Out: <strong className="text-rose-600 font-semibold">-${totalExpense.toLocaleString()}</strong></span>
+            <span>In: <strong className="text-emerald-600 font-semibold">+₹{totalIncome.toLocaleString()}</strong></span>
+            <span>Out: <strong className="text-rose-600 font-semibold">-₹{totalExpense.toLocaleString()}</strong></span>
           </div>
         </div>
 
@@ -445,7 +445,7 @@ const OverviewHub = () => {
                     <div key={category} className="space-y-1">
                       <div className="flex justify-between text-xs font-medium">
                         <span className="text-slate-700">{category}</span>
-                        <span className="font-bold text-slate-900">${amount} ({pct}%)</span>
+                        <span className="font-bold text-slate-900">₹{amount.toLocaleString()} ({pct}%)</span>
                       </div>
                       <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                         <div

@@ -87,9 +87,9 @@ async function initDatabase() {
         {
           userId,
           type: 'income',
-          amount: 3200,
+          amount: 45000,
           category: 'Salary',
-          description: 'Tech Internship Stipend',
+          description: 'Monthly Tech Internship Stipend',
           paymentMethod: 'UPI / Bank',
           date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
           isRecurring: true,
@@ -98,7 +98,7 @@ async function initDatabase() {
         {
           userId,
           type: 'income',
-          amount: 450,
+          amount: 12500,
           category: 'Freelance',
           description: 'Web Design Client Gig',
           paymentMethod: 'UPI / Bank',
@@ -109,7 +109,7 @@ async function initDatabase() {
         {
           userId,
           type: 'expense',
-          amount: 145,
+          amount: 3200,
           category: 'Food & Dining',
           description: 'Weekly healthy groceries & fruits',
           paymentMethod: 'Credit Card',
@@ -120,7 +120,7 @@ async function initDatabase() {
         {
           userId,
           type: 'expense',
-          amount: 80,
+          amount: 1999,
           category: 'Education',
           description: 'Full Stack Algorithm Masterclass',
           paymentMethod: 'Debit Card',
@@ -131,16 +131,27 @@ async function initDatabase() {
         {
           userId,
           type: 'expense',
-          amount: 45,
+          amount: 699,
           category: 'Entertainment',
           description: 'Streaming & Cloud subscriptions',
           paymentMethod: 'UPI / Bank',
           date: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
           isRecurring: true,
           tags: ['subs']
+        },
+        {
+          userId,
+          type: 'expense',
+          amount: 1450,
+          category: 'Transportation',
+          description: 'Metro pass & ride share',
+          paymentMethod: 'Cash',
+          date: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+          isRecurring: false,
+          tags: ['transit']
         }
       ]);
-      console.log('   -> Seeded 5 initial Income & Expense transactions');
+      console.log('   -> Seeded 6 initial Income & Expense transactions in INR');
     } else {
       console.log(`   -> Found ${txCount} existing transactions`);
     }
@@ -151,22 +162,22 @@ async function initDatabase() {
     const budgetCount = await Budget.countDocuments({ userId, monthYear: currentMonth });
     if (budgetCount === 0) {
       await Budget.insertMany([
-        { userId, category: 'Food & Dining', monthlyLimit: 500, monthYear: currentMonth },
-        { userId, category: 'Education', monthlyLimit: 200, monthYear: currentMonth },
-        { userId, category: 'Entertainment', monthlyLimit: 120, monthYear: currentMonth },
-        { userId, category: 'Shopping', monthlyLimit: 250, monthYear: currentMonth }
+        { userId, category: 'Food & Dining', monthlyLimit: 10000, monthYear: currentMonth },
+        { userId, category: 'Education', monthlyLimit: 5000, monthYear: currentMonth },
+        { userId, category: 'Entertainment', monthlyLimit: 3000, monthYear: currentMonth },
+        { userId, category: 'Shopping', monthlyLimit: 6000, monthYear: currentMonth }
       ]);
-      console.log('   -> Seeded 4 monthly category budget limits');
+      console.log('   -> Seeded 4 monthly category budget limits in INR');
     }
 
     const goalCount = await SavingsGoal.countDocuments({ userId });
     if (goalCount === 0) {
       await SavingsGoal.insertMany([
-        { userId, title: 'New M3 MacBook Pro', targetAmount: 2200, currentAmount: 1450, targetDate: new Date('2026-12-15'), color: '#6366f1' },
-        { userId, title: 'Emergency Fund', targetAmount: 3000, currentAmount: 2100, targetDate: new Date('2027-01-01'), color: '#10b981' },
-        { userId, title: 'Hackathon Travel & Stay', targetAmount: 600, currentAmount: 420, targetDate: new Date('2026-10-20'), color: '#f59e0b' }
+        { userId, title: 'New M3 MacBook Pro', targetAmount: 125000, currentAmount: 85000, targetDate: new Date('2026-12-15'), color: '#6366f1' },
+        { userId, title: 'Emergency Fund', targetAmount: 100000, currentAmount: 65000, targetDate: new Date('2027-01-01'), color: '#10b981' },
+        { userId, title: 'Hackathon Travel & Stay', targetAmount: 15000, currentAmount: 10500, targetDate: new Date('2026-10-20'), color: '#f59e0b' }
       ]);
-      console.log('   -> Seeded 3 savings goals');
+      console.log('   -> Seeded 3 savings goals in INR');
     }
 
     // 5. Setup Study Subjects & Deadlines
