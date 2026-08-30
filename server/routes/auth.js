@@ -57,9 +57,10 @@ router.post('/register', [
     await user.save();
 
     // Generate JWT token
+    const JWT_SECRET = process.env.JWT_SECRET || 'apexhub_jwt_secret_dev_key_2026';
     const token = jwt.sign(
       { userId: user._id },
-      process.env.JWT_SECRET,
+      JWT_SECRET,
       { expiresIn: '7d' }
     );
 
@@ -116,9 +117,10 @@ router.post('/login', [
     }
 
     // Generate JWT token
+    const JWT_SECRET = process.env.JWT_SECRET || 'apexhub_jwt_secret_dev_key_2026';
     const token = jwt.sign(
       { userId: user._id },
-      process.env.JWT_SECRET,
+      JWT_SECRET,
       { expiresIn: '7d' }
     );
 

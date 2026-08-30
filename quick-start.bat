@@ -1,19 +1,23 @@
 @echo off
-title Notes Todo App
-echo Starting Notes Todo App...
+title ApexHub - Tasks, Finance & Study Suite
+echo ========================================================
+echo   Starting ApexHub: Tasks, Finance & Study Suite
+echo ========================================================
 echo.
 
-echo Starting backend server...
-start "Backend" cmd /k "cd /d "%~dp0server" && npm run dev"
+echo Starting backend server on port 5000...
+start "ApexHub Backend (Port 5000)" cmd /k "cd /d "%~dp0server" && npm run dev"
 
 timeout /t 2 /nobreak > nul
 
-echo Starting frontend client...
-start "Frontend" cmd /k "cd /d "%~dp0client" && npm start"
+echo Starting frontend client on port 3000...
+start "ApexHub Frontend (Port 3000)" cmd /k "cd /d "%~dp0client" && npm start"
 
 echo.
-echo ✅ Servers starting!
-echo Frontend: http://localhost:3000
-echo Backend: http://localhost:5000
+echo ========================================================
+echo  [OK] ApexHub servers starting!
+echo  Frontend UI: http://localhost:3000
+echo  Backend API: http://localhost:5000
+echo ========================================================
 echo.
 pause

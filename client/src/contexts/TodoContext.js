@@ -125,7 +125,8 @@ export const TodoProvider = ({ children }) => {
     } else {
       setTodos([]);
     }
-  }, [isAuthenticated]); // fetchTodos is stable and doesn't need to be in dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated]);
 
   const value = {
     todos,

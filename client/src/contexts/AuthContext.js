@@ -21,8 +21,13 @@ export const AuthProvider = ({ children }) => {
     const storedUser = localStorage.getItem('user');
 
     if (storedToken && storedUser) {
-      setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      try {
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } catch (e) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
     }
     setLoading(false);
   }, []);
@@ -45,6 +50,20 @@ export const AuthProvider = ({ children }) => {
         message: error.response?.data?.message || 'Login failed'
       };
     }
+  };
+
+  const loginDemo = () => {
+    const demoUser = {
+      _id: 'demo-user-id',
+      username: 'Alex Carter',
+      email: 'alex.carter@example.com'
+    };
+    const demoToken = 'demo-jwt-token-sample';
+    localStorage.setItem('token', demoToken);
+    localStorage.setItem('user', JSON.stringify(demoUser));
+    setToken(demoToken);
+    setUser(demoUser);
+    return { success: true };
   };
 
   const register = async (username, email, password) => {
@@ -83,6 +102,7 @@ export const AuthProvider = ({ children }) => {
     user,
     token,
     login,
+    loginDemo,
     register,
     logout,
     isAuthenticated: !!token
@@ -90,8 +110,8 @@ export const AuthProvider = ({ children }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary-600"></div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
       </div>
     );
   }

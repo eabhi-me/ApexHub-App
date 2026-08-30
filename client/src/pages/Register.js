@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { Eye, EyeOff, UserPlus } from 'lucide-react';
+import { Eye, EyeOff, Sparkles, UserPlus, ArrowRight } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 const Register = () => {
   const navigate = useNavigate();
-  const { register, isAuthenticated } = useAuth();
+  const { register, loginDemo, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -17,10 +17,9 @@ const Register = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Redirect if already authenticated
   React.useEffect(() => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate('/overview');
     }
   }, [isAuthenticated, navigate]);
 
@@ -54,150 +53,172 @@ const Register = () => {
       );
       
       if (result.success) {
-        toast.success('Registration successful!');
-        navigate('/dashboard');
+        toast.success('Registration successful! Welcome to ApexHub.');
+        navigate('/overview');
       } else {
         toast.error(result.message);
       }
     } catch (error) {
-      toast.error('Registration failed. Please try again.');
+      toast.error('Registration failed. Please try again or use Demo Mode.');
     } finally {
       setLoading(false);
     }
   };
 
+  const handleDemoAccess = () => {
+    loginDemo();
+    toast.success('Logged in with Demo Mode! 🎉');
+    navigate('/overview');
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-primary-100">
-            <UserPlus className="h-6 w-6 text-primary-600" />
+    <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4 py-12 relative overflow-hidden">
+      
+      {/* Background glow */}
+      <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-violet-600/20 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-md w-full relative z-10 space-y-6">
+        
+        {/* Brand Header */}
+        <div className="text-center space-y-2">
+          <div className="inline-flex h-14 w-14 rounded-2xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-pink-600 items-center justify-center shadow-xl shadow-indigo-600/30 text-white mx-auto">
+            <UserPlus className="h-7 w-7" />
           </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
+          <h2 className="text-3xl font-black text-white tracking-tight">
+            Join ApexHub
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link
-              to="/login"
-              className="font-medium text-primary-600 hover:text-primary-500"
-            >
-              sign in to your existing account
-            </Link>
+          <p className="text-sm text-slate-400">
+            Create your account to start managing tasks, finances & studies
           </p>
         </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
+
+        {/* Card */}
+        <div className="bg-slate-900/80 backdrop-blur-xl border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+          
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                 Username
               </label>
               <input
-                id="username"
                 name="username"
                 type="text"
-                autoComplete="username"
                 required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your username"
                 value={formData.username}
                 onChange={handleChange}
+                placeholder="e.g. AlexCarter"
+                className="w-full px-4 py-3 text-sm bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                Email Address
               </label>
               <input
-                id="email"
                 name="email"
                 type="email"
-                autoComplete="email"
                 required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                placeholder="Enter your email"
                 value={formData.email}
                 onChange={handleChange}
+                placeholder="name@domain.com"
+                className="w-full px-4 py-3 text-sm bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                 Password
               </label>
-              <div className="mt-1 relative">
+              <div className="relative">
                 <input
-                  id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  autoComplete="new-password"
                   required
-                  className="appearance-none relative block w-full px-3 py-2 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                  placeholder="Enter your password"
                   value={formData.password}
                   onChange={handleChange}
+                  placeholder="At least 6 characters"
+                  className="w-full px-4 py-3 text-sm bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-gray-400" />
-                  )}
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                 Confirm Password
               </label>
-              <div className="mt-1 relative">
+              <div className="relative">
                 <input
-                  id="confirmPassword"
                   name="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
-                  autoComplete="new-password"
                   required
-                  className="appearance-none relative block w-full px-3 py-2 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-primary-500 focus:border-primary-500 focus:z-10 sm:text-sm"
-                  placeholder="Confirm your password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
+                  placeholder="Repeat password"
+                  className="w-full px-4 py-3 text-sm bg-slate-800/80 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
                 <button
                   type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
                 >
-                  {showConfirmPassword ? (
-                    <EyeOff className="h-4 w-4 text-gray-400" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-gray-400" />
-                  )}
+                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
             </div>
-          </div>
 
-          <div>
             <button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3.5 px-4 rounded-xl text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center space-x-2"
             >
               {loading ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
               ) : (
-                'Create Account'
+                <>
+                  <span>Create Account</span>
+                  <ArrowRight className="h-4 w-4" />
+                </>
               )}
             </button>
+          </form>
+
+          {/* Quick Demo Access Divider */}
+          <div className="relative flex items-center justify-center">
+            <div className="border-t border-slate-800 w-full" />
+            <span className="bg-slate-900 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+              Or
+            </span>
+            <div className="border-t border-slate-800 w-full" />
           </div>
-        </form>
+
+          <button
+            type="button"
+            onClick={handleDemoAccess}
+            className="w-full py-3 px-4 rounded-xl text-xs sm:text-sm font-bold bg-gradient-to-r from-emerald-500/15 via-indigo-500/15 to-violet-500/15 border border-indigo-500/30 text-indigo-200 hover:text-white hover:bg-indigo-500/25 transition-all flex items-center justify-center space-x-2"
+          >
+            <Sparkles className="h-4 w-4 text-amber-400" />
+            <span>Instant Demo Access</span>
+          </button>
+
+          <div className="text-center pt-2">
+            <span className="text-xs text-slate-400">
+              Already have an account?{' '}
+              <Link to="/login" className="font-semibold text-indigo-400 hover:underline">
+                Sign in here
+              </Link>
+            </span>
+          </div>
+        </div>
+
       </div>
     </div>
   );

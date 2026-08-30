@@ -15,6 +15,8 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/todos', require('./routes/todos'));
+app.use('/api/finance', require('./routes/finance'));
+app.use('/api/study', require('./routes/study'));
 
 // Database connection
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/notes-todo', {
