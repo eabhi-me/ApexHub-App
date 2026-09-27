@@ -134,12 +134,38 @@ const deadlineSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Study Plan Schema
+const studyPlanSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true
+  },
+  date: {
+    type: Date,
+    required: true
+  },
+  items: [{
+    time: String,
+    activity: String,
+    type: String,
+    estimatedDuration: Number,
+    priority: String,
+    reason: String
+  }]
+}, {
+  timestamps: true
+});
+
 const Subject = mongoose.model('Subject', subjectSchema);
 const StudySession = mongoose.model('StudySession', studySessionSchema);
 const Deadline = mongoose.model('Deadline', deadlineSchema);
+const StudyPlan = mongoose.model('StudyPlan', studyPlanSchema);
 
 module.exports = {
   Subject,
   StudySession,
-  Deadline
+  Deadline,
+  StudyPlan
 };

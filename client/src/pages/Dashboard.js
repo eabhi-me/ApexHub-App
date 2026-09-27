@@ -94,43 +94,43 @@ const Dashboard = () => {
 
       {/* 4 Stat Overview Badges */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-3">
-          <div className="h-10 w-10 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-bold">
-            <Layers className="h-5 w-5" />
+        <div className="bg-white/80 backdrop-blur-xl p-5 rounded-3xl border border-white/60 shadow-lg shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex items-center space-x-4">
+          <div className="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold shadow-sm">
+            <Layers className="h-6 w-6" />
           </div>
           <div>
-            <div className="text-xl font-black text-slate-900 font-mono">{todoStats.total}</div>
-            <div className="text-xs text-slate-500 font-medium">Total Tasks</div>
+            <div className="text-2xl font-black text-slate-900 font-mono">{todoStats.total}</div>
+            <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5">Total Tasks</div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-3">
-          <div className="h-10 w-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold">
-            <Clock className="h-5 w-5" />
+        <div className="bg-white/80 backdrop-blur-xl p-5 rounded-3xl border border-white/60 shadow-lg shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex items-center space-x-4">
+          <div className="h-12 w-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center font-bold shadow-sm">
+            <Clock className="h-6 w-6" />
           </div>
           <div>
-            <div className="text-xl font-black text-amber-600 font-mono">{todoStats.pending}</div>
-            <div className="text-xs text-slate-500 font-medium">In Progress</div>
+            <div className="text-2xl font-black text-slate-900 font-mono">{todoStats.pending}</div>
+            <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5">In Progress</div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-3">
-          <div className="h-10 w-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold">
-            <AlertCircle className="h-5 w-5" />
+        <div className="bg-white/80 backdrop-blur-xl p-5 rounded-3xl border border-white/60 shadow-lg shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex items-center space-x-4">
+          <div className="h-12 w-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center font-bold shadow-sm">
+            <AlertCircle className="h-6 w-6" />
           </div>
           <div>
-            <div className="text-xl font-black text-rose-600 font-mono">{todoStats.high}</div>
-            <div className="text-xs text-slate-500 font-medium">Urgent / High</div>
+            <div className="text-2xl font-black text-slate-900 font-mono">{todoStats.high}</div>
+            <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5">Urgent</div>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex items-center space-x-3">
-          <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
-            <CheckCircle2 className="h-5 w-5" />
+        <div className="bg-white/80 backdrop-blur-xl p-5 rounded-3xl border border-white/60 shadow-lg shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex items-center space-x-4">
+          <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center font-bold shadow-sm">
+            <CheckCircle2 className="h-6 w-6" />
           </div>
           <div>
-            <div className="text-xl font-black text-emerald-600 font-mono">{todoStats.completed}</div>
-            <div className="text-xs text-slate-500 font-medium">Completed</div>
+            <div className="text-2xl font-black text-slate-900 font-mono">{todoStats.completed}</div>
+            <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5">Completed</div>
           </div>
         </div>
       </div>

@@ -16,6 +16,7 @@ import OverviewHub from './pages/OverviewHub';
 import Dashboard from './pages/Dashboard';
 import FinanceTracker from './pages/FinanceTracker';
 import StudyPlanner from './pages/StudyPlanner';
+import ApexAI from './pages/ApexAI';
 
 function App() {
   return (
@@ -70,6 +71,17 @@ function App() {
                       <PrivateRoute>
                         <Layout>
                           <StudyPlanner />
+                        </Layout>
+                      </PrivateRoute>
+                    }
+                  />
+
+                  <Route
+                    path="/ai"
+                    element={
+                      <PrivateRoute>
+                        <Layout>
+                          <ApexAI />
                         </Layout>
                       </PrivateRoute>
                     }

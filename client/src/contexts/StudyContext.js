@@ -292,36 +292,50 @@ export const StudyProvider = ({ children }) => {
     }
   }, []);
 
-  // Pomodoro timer tick effect
-  useEffect(() => {
-    if (isTimerRunning) {
-      timerRef.current = setInterval(() => {
-        setTimeLeft(prev => {
-          if (prev <= 1) {
-            clearInterval(timerRef.current);
-            setIsTimerRunning(false);
-            playTimerChime();
+  const [endTime, setEndTime] = useState(null);
 
-            if (timerMode === 'focus') {
-              logStudySession(focusDuration, currentSessionTopic, selectedSubjectId);
-              toast.info('Focus session complete! Time for a well-deserved break.');
-              setTimerMode('shortBreak');
-              return shortBreakDuration * 60;
-            } else {
-              toast.info('Break finished! Ready to dive back in?');
-              setTimerMode('focus');
-              return focusDuration * 60;
-            }
+  // Sync end time when timer starts or stops
+  useEffect(() => {
+    if (isTimerRunning && !endTime) {
+      setEndTime(Date.now() + timeLeft * 1000);
+    } else if (!isTimerRunning && endTime) {
+      setEndTime(null);
+    }
+  }, [isTimerRunning, endTime, timeLeft]);
+
+  // Pomodoro timer tick effect using absolute timestamps for background tab accuracy
+  useEffect(() => {
+    if (isTimerRunning && endTime) {
+      timerRef.current = setInterval(() => {
+        const remaining = Math.max(0, Math.round((endTime - Date.now()) / 1000));
+        
+        if (remaining <= 0) {
+          clearInterval(timerRef.current);
+          setIsTimerRunning(false);
+          setEndTime(null);
+          setTimeLeft(0);
+          playTimerChime();
+
+          if (timerMode === 'focus') {
+            logStudySession(focusDuration, currentSessionTopic, selectedSubjectId);
+            toast.info('Focus session complete! Time for a well-deserved break.');
+            setTimerMode('shortBreak');
+            setTimeLeft(shortBreakDuration * 60);
+          } else {
+            toast.info('Break finished! Ready to dive back in?');
+            setTimerMode('focus');
+            setTimeLeft(focusDuration * 60);
           }
-          return prev - 1;
-        });
-      }, 1000);
+        } else {
+          setTimeLeft(remaining);
+        }
+      }, 500); // 500ms for more responsive updates when tabbing back
     } else {
       clearInterval(timerRef.current);
     }
 
     return () => clearInterval(timerRef.current);
-  }, [isTimerRunning, timerMode, focusDuration, shortBreakDuration, currentSessionTopic, selectedSubjectId, playTimerChime, logStudySession]);
+  }, [isTimerRunning, endTime, timerMode, focusDuration, shortBreakDuration, currentSessionTopic, selectedSubjectId, playTimerChime, logStudySession]);
 
   // Switch Timer Mode
   const switchTimerMode = (mode) => {
