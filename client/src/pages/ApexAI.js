@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Sparkles, ArrowRight, Calendar, Clock, Activity, MessageSquare } from 'lucide-react';
 import { toast } from 'react-toastify';
+import api from '../utils/api';
 
 const neo = {
   card: {
@@ -57,22 +58,14 @@ const ApexAI = () => {
     setIsChatLoading(true);
 
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/ai/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ message: text }),
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setMessages(prev => [...prev, { id: Date.now(), role: 'ai', content: data.reply }]);
-        if (data.success && data.reply.includes('successfully')) toast.success('Action completed!');
-      } else {
-        toast.error(data.message || 'Failed to process request');
-        setMessages(prev => [...prev, { id: Date.now(), role: 'ai', content: `Error: ${data.message || 'Failed to process'}` }]);
-      }
-    } catch {
-      toast.error('Network error communicating with AI');
+      const res = await api.post('/ai/chat', { message: text });
+      const data = res.data;
+      setMessages(prev => [...prev, { id: Date.now(), role: 'ai', content: data.reply }]);
+      if (data.success && data.reply.includes('successfully')) toast.success('Action completed!');
+    } catch (error) {
+      const data = error.response?.data || {};
+      toast.error(data.message || 'Failed to process request');
+      setMessages(prev => [...prev, { id: Date.now(), role: 'ai', content: `Error: ${data.message || 'Failed to process'}` }]);
     } finally {
       setIsChatLoading(false);
     }
@@ -81,20 +74,13 @@ const ApexAI = () => {
   const generateDailyPlan = async () => {
     setIsPlannerLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/ai/plan/day', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (res.ok) {
-        if (data.plan) { setDailyPlan(data.plan); toast.success('Daily plan generated!'); }
-        else toast.info(data.message || 'Nothing to plan today.');
-      } else {
-        toast.error(data.message || 'Failed to generate plan');
-      }
-    } catch {
-      toast.error('Network error communicating with AI');
+      const res = await api.post('/ai/plan/day');
+      const data = res.data;
+      if (data.plan) { setDailyPlan(data.plan); toast.success('Daily plan generated!'); }
+      else toast.info(data.message || 'Nothing to plan today.');
+    } catch (error) {
+      const data = error.response?.data || {};
+      toast.error(data.message || 'Failed to generate plan');
     } finally {
       setIsPlannerLoading(false);
     }
