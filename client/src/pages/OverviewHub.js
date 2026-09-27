@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  TrendingUp, TrendingDown, Flame, Clock, CheckCircle2, Circle, AlertCircle,
+  Flame, CheckCircle2, Circle,
   Plus, ArrowUpRight, Sparkles, Calendar, DollarSign, GraduationCap,
   Play, Pause, RotateCcw, CheckSquare
 } from 'lucide-react';

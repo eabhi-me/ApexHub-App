@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   Flame, Clock, Play, Pause, RotateCcw, Plus, CheckCircle2, Circle,
-  BookOpen, Trash2, X, ChevronDown, ChevronUp, Award, Calendar, Target
+  BookOpen, Trash2, X, ChevronDown, ChevronUp, Award, Calendar
 } from 'lucide-react';
 import { useStudy } from '../contexts/StudyContext';
 

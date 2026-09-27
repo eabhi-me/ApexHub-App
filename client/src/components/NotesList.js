@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, MessageSquare, Check, X } from 'lucide-react';
+import { Plus, Edit, Trash2, MessageSquare } from 'lucide-react';
 import { format } from 'date-fns';
 import { useTodos } from '../contexts/TodoContext';
 

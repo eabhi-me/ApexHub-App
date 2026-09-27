@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Sparkles, Loader2, ArrowRight, Calendar, Clock, Activity, MessageSquare } from 'lucide-react';
+import { Send, Bot, User, Sparkles, ArrowRight, Calendar, Clock, Activity, MessageSquare } from 'lucide-react';
 import { toast } from 'react-toastify';
 
 const neo = {
