@@ -4,95 +4,271 @@
 @tailwind utilities;
 
 /* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+/* ============================
+   DESIGN TOKENS & BASE STYLES
+   ============================ */
+:root {
+  --bg-base: #eef0f5;
+  --bg-surface: #f0f2f7;
+  --shadow-light: rgba(255, 255, 255, 0.85);
+  --shadow-dark: rgba(174, 180, 200, 0.6);
+  --neo-shadow: 6px 6px 16px var(--shadow-dark), -6px -6px 16px var(--shadow-light);
+  --neo-shadow-sm: 3px 3px 8px var(--shadow-dark), -3px -3px 8px var(--shadow-light);
+  --neo-shadow-lg: 10px 10px 30px var(--shadow-dark), -10px -10px 30px var(--shadow-light);
+  --neo-inset: inset 4px 4px 10px var(--shadow-dark), inset -4px -4px 10px var(--shadow-light);
+  --accent-primary: #6366f1;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+  --accent-violet: #8b5cf6;
+}
 
 /* Base Styles */
+* {
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f8fafc;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.1) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.1) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(245, 158, 11, 0.08) 0px, transparent 50%);
+  background-color: var(--bg-base);
+  background-image:
+    radial-gradient(ellipse at 10% 20%, rgba(99, 102, 241, 0.07) 0px, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(139, 92, 246, 0.07) 0px, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.04) 0px, transparent 70%);
   background-attachment: fixed;
-  color: #0f172a;
+  color: #1e2332;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Glassmorphism cards */
-.glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+/* ============================
+   NEOMORPHISM UTILITY CLASSES
+   ============================ */
+
+/* Neumorphic elevated card */
+.neo-card {
+  background: var(--bg-surface);
+  border-radius: 20px;
+  box-shadow: var(--neo-shadow);
+  border: 1px solid rgba(255, 255, 255, 0.7);
 }
 
-.glass-card-dark {
-  background: rgba(15, 23, 42, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.neo-card-sm {
+  background: var(--bg-surface);
+  border-radius: 14px;
+  box-shadow: var(--neo-shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.7);
 }
 
-/* Gradient accents */
-.gradient-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+.neo-card-lg {
+  background: var(--bg-surface);
+  border-radius: 28px;
+  box-shadow: var(--neo-shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
-.gradient-emerald {
-  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+/* Neumorphic inset (pressed/input look) */
+.neo-inset {
+  background: var(--bg-base);
+  border-radius: 12px;
+  box-shadow: var(--neo-inset);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.gradient-violet {
-  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+/* Neumorphic button (raised) */
+.neo-btn {
+  background: var(--bg-surface);
+  border-radius: 12px;
+  box-shadow: var(--neo-shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.gradient-amber {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+.neo-btn:hover {
+  box-shadow: 4px 4px 12px var(--shadow-dark), -4px -4px 12px var(--shadow-light);
+  transform: translateY(-1px);
 }
 
-.gradient-rose {
-  background: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+.neo-btn:active {
+  box-shadow: var(--neo-inset);
+  transform: translateY(0);
 }
 
-.gradient-mesh {
-  background-color: #f8fafc;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(139, 92, 246, 0.08) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.06) 0px, transparent 50%),
-    radial-gradient(at 0% 100%, rgba(245, 158, 11, 0.05) 0px, transparent 50%);
+/* Gradient accent pills */
+.neo-accent-indigo {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  box-shadow: 4px 4px 12px rgba(99, 102, 241, 0.35), -2px -2px 8px rgba(255, 255, 255, 0.5);
 }
 
-/* Custom Scrollbar */
+.neo-accent-emerald {
+  background: linear-gradient(135deg, #10b981, #059669);
+  box-shadow: 4px 4px 12px rgba(16, 185, 129, 0.35), -2px -2px 8px rgba(255, 255, 255, 0.5);
+}
+
+.neo-accent-amber {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  box-shadow: 4px 4px 12px rgba(245, 158, 11, 0.35), -2px -2px 8px rgba(255, 255, 255, 0.5);
+}
+
+.neo-accent-rose {
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  box-shadow: 4px 4px 12px rgba(244, 63, 94, 0.35), -2px -2px 8px rgba(255, 255, 255, 0.5);
+}
+
+/* Icon container */
+.neo-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  box-shadow: var(--neo-shadow-sm);
+  background: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+/* ============================
+   CUSTOM SCROLLBAR
+   ============================ */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #cbd5e1 #f1f5f9;
+  scrollbar-color: #c1c8dc #e8eaf2;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #e8eaf2;
   border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #cbd5e1;
+  background: #c1c8dc;
   border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #94a3b8;
+  background: #9ba5bc;
 }
 
-/* Subtle transitions for all interactive elements */
+/* ============================
+   FORM INPUT NEOMORPHIC
+   ============================ */
+.neo-input {
+  background: var(--bg-base);
+  border-radius: 12px;
+  box-shadow: inset 3px 3px 7px rgba(174, 180, 200, 0.5), inset -3px -3px 7px rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #1e2332;
+  outline: none;
+  transition: all 0.2s ease;
+  width: 100%;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.neo-input:focus {
+  box-shadow: inset 3px 3px 7px rgba(174, 180, 200, 0.5), inset -3px -3px 7px rgba(255, 255, 255, 0.8), 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+.neo-input::placeholder {
+  color: #9ba5bc;
+}
+
+/* ============================
+   ANIMATIONS
+   ============================ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out both;
+}
+
+.animate-slideInRight {
+  animation: slideInRight 0.4s ease-out both;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.35s ease-out both;
+}
+
+/* ============================
+   TYPOGRAPHY HELPERS
+   ============================ */
+.font-mono-display {
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-feature-settings: 'tnum';
+}
+
+/* ============================
+   DARK GLASS PANEL (for banners)
+   ============================ */
+.glass-dark {
+  background: rgba(15, 18, 35, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================
+   PROGRESS BAR
+   ============================ */
+.neo-progress-track {
+  background: var(--bg-base);
+  border-radius: 999px;
+  box-shadow: inset 2px 2px 5px rgba(174, 180, 200, 0.6), inset -2px -2px 5px rgba(255, 255, 255, 0.9);
+  overflow: hidden;
+}
+
+.neo-progress-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================
+   BADGE / PILL
+   ============================ */
+.neo-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 2px 2px 6px var(--shadow-dark), -2px -2px 6px var(--shadow-light);
+  background: var(--bg-surface);
+}
+
+/* Interactive element transitions */
 button, a, input, select, textarea {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
 }

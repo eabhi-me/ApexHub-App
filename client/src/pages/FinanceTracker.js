@@ -1,129 +1,127 @@
 import React, { useState } from 'react';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Plus, 
-  Download, 
-  Search, 
-  Trash2, 
-  PiggyBank, 
-  Target, 
-  CreditCard, 
-  AlertTriangle,
-  X,
-  PlusCircle,
-  ArrowDownLeft,
-  ArrowUpRight
+import {
+  TrendingUp, TrendingDown, Plus, Download, Search, Trash2,
+  PiggyBank, Target, CreditCard, X, ArrowDownLeft, ArrowUpRight,
+  Wallet, AlertTriangle
 } from 'lucide-react';
 import { useFinance, CATEGORIES } from '../contexts/FinanceContext';
 
+/* ── style helpers ── */
+const neo = {
+  card: { background: '#eef0f5', boxShadow: '8px 8px 20px rgba(174,200,200,0.6), -8px -8px 20px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.8)', borderRadius: '22px' },
+  cardSm: { background: '#eef0f5', boxShadow: '5px 5px 12px rgba(174,180,200,0.55), -5px -5px 12px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.75)', borderRadius: '16px' },
+  inset: { background: '#e4e6ef', boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.4)' },
+  progress: { background: '#e4e6ef', boxShadow: 'inset 2px 2px 5px rgba(174,180,200,0.55), inset -2px -2px 5px rgba(255,255,255,0.85)', borderRadius: '999px', overflow: 'hidden', height: '8px' },
+};
+
+const NeoInput = ({ style, ...props }) => (
+  <input
+    {...props}
+    style={{
+      ...neo.inset,
+      width: '100%',
+      padding: '0.65rem 1rem',
+      fontSize: '0.875rem',
+      fontWeight: '500',
+      color: '#1e2332',
+      outline: 'none',
+      fontFamily: 'Plus Jakarta Sans, sans-serif',
+      ...style,
+    }}
+  />
+);
+
+const NeoSelect = ({ style, ...props }) => (
+  <select
+    {...props}
+    style={{
+      ...neo.inset,
+      width: '100%',
+      padding: '0.65rem 1rem',
+      fontSize: '0.875rem',
+      fontWeight: '600',
+      color: '#1e2332',
+      outline: 'none',
+      appearance: 'none',
+      cursor: 'pointer',
+      fontFamily: 'Plus Jakarta Sans, sans-serif',
+      ...style,
+    }}
+  />
+);
+
+const Modal = ({ title, onClose, children }) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    style={{ background: 'rgba(15,18,35,0.55)', backdropFilter: 'blur(6px)' }}>
+    <div className="w-full max-w-md p-7 animate-scaleIn"
+      style={{ ...neo.card, borderRadius: '28px', boxShadow: '20px 20px 50px rgba(174,180,200,0.65), -10px -10px 30px rgba(255,255,255,0.9)' }}>
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-black text-slate-800">{title}</h3>
+        <button onClick={onClose}
+          className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-rose-500"
+          style={{ ...neo.cardSm }}>
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+      {children}
+    </div>
+  </div>
+);
+
+const GradBtn = ({ children, color1 = '#10b981', color2 = '#059669', className = '', ...props }) => (
+  <button
+    {...props}
+    className={`font-bold text-white rounded-2xl flex items-center justify-center gap-2 transition-transform active:scale-95 ${className}`}
+    style={{ background: `linear-gradient(135deg, ${color1}, ${color2})`, boxShadow: `4px 4px 12px ${color1}40`, ...(props.disabled ? { opacity: 0.6, cursor: 'not-allowed' } : {}) }}
+  >
+    {children}
+  </button>
+);
+
 const FinanceTracker = () => {
-  const { 
-    transactions, 
-    budgets, 
-    goals, 
-    totalIncome, 
-    totalExpense, 
-    netBalance, 
-    savingsRate, 
-    categoryExpenses, 
-    addTransaction, 
-    deleteTransaction,
-    setBudget,
-    addGoal,
-    depositToGoal,
-    deleteGoal,
-    exportToCSV 
+  const {
+    transactions, budgets, goals,
+    totalIncome, totalExpense, netBalance, savingsRate, categoryExpenses,
+    addTransaction, deleteTransaction, setBudget, addGoal, depositToGoal, deleteGoal, exportToCSV
   } = useFinance();
 
-  // Modals state
   const [showTxModal, setShowTxModal] = useState(false);
   const [showBudgetModal, setShowBudgetModal] = useState(false);
   const [showGoalModal, setShowGoalModal] = useState(false);
-  const [showDepositModal, setShowDepositModal] = useState(null); // goal object if open
-
-  // Filtering & Search
-  const [activeTab, setActiveTab] = useState('all'); // all, expense, income
+  const [showDepositModal, setShowDepositModal] = useState(null);
+  const [activeTab, setActiveTab] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // New Transaction Form State
-  const [txForm, setTxForm] = useState({
-    type: 'expense',
-    amount: '',
-    category: 'Food & Dining',
-    description: '',
-    paymentMethod: 'UPI / Bank',
-    date: new Date().toISOString().slice(0, 10),
-    isRecurring: false,
-    tags: ''
-  });
-
-  // Budget Form State
-  const [budgetForm, setBudgetForm] = useState({
-    category: 'Food & Dining',
-    monthlyLimit: ''
-  });
-
-  // Savings Goal Form State
-  const [goalForm, setGoalForm] = useState({
-    title: '',
-    targetAmount: '',
-    currentAmount: '',
-    targetDate: '',
-    color: '#6366f1'
-  });
-
-  // Deposit Form State
+  const [txForm, setTxForm] = useState({ type: 'expense', amount: '', category: CATEGORIES.expense[0].name, description: '', paymentMethod: 'UPI / Bank', date: new Date().toISOString().slice(0, 10), isRecurring: false, tags: '' });
+  const [budgetForm, setBudgetForm] = useState({ category: CATEGORIES.expense[0].name, monthlyLimit: '' });
+  const [goalForm, setGoalForm] = useState({ title: '', targetAmount: '', currentAmount: '', targetDate: '', color: '#6366f1' });
   const [depositAmount, setDepositAmount] = useState('');
 
-  // Handle submit transaction
   const handleTxSubmit = async (e) => {
     e.preventDefault();
     if (!txForm.amount || Number(txForm.amount) <= 0) return;
-    
-    await addTransaction({
-      ...txForm,
-      amount: parseFloat(txForm.amount),
-      tags: txForm.tags ? txForm.tags.split(',').map(t => t.trim()) : []
-    });
-
-    setTxForm({
-      type: 'expense',
-      amount: '',
-      category: 'Food & Dining',
-      description: '',
-      paymentMethod: 'UPI / Bank',
-      date: new Date().toISOString().slice(0, 10),
-      isRecurring: false,
-      tags: ''
-    });
+    await addTransaction({ ...txForm, amount: parseFloat(txForm.amount), tags: txForm.tags ? txForm.tags.split(',').map(t => t.trim()) : [] });
+    setTxForm({ type: 'expense', amount: '', category: CATEGORIES.expense[0].name, description: '', paymentMethod: 'UPI / Bank', date: new Date().toISOString().slice(0, 10), isRecurring: false, tags: '' });
     setShowTxModal(false);
   };
 
-  // Handle submit budget
   const handleBudgetSubmit = async (e) => {
     e.preventDefault();
     if (!budgetForm.monthlyLimit || Number(budgetForm.monthlyLimit) <= 0) return;
     await setBudget(budgetForm.category, parseFloat(budgetForm.monthlyLimit));
-    setBudgetForm({ category: 'Food & Dining', monthlyLimit: '' });
+    setBudgetForm({ category: CATEGORIES.expense[0].name, monthlyLimit: '' });
     setShowBudgetModal(false);
   };
 
-  // Handle submit goal
   const handleGoalSubmit = async (e) => {
     e.preventDefault();
     if (!goalForm.title || !goalForm.targetAmount) return;
-    await addGoal({
-      ...goalForm,
-      targetAmount: parseFloat(goalForm.targetAmount),
-      currentAmount: parseFloat(goalForm.currentAmount || 0)
-    });
+    await addGoal({ ...goalForm, targetAmount: parseFloat(goalForm.targetAmount), currentAmount: parseFloat(goalForm.currentAmount || 0) });
     setGoalForm({ title: '', targetAmount: '', currentAmount: '', targetDate: '', color: '#6366f1' });
     setShowGoalModal(false);
   };
 
-  // Handle deposit
   const handleDepositSubmit = async (e) => {
     e.preventDefault();
     if (!depositAmount || Number(depositAmount) <= 0 || !showDepositModal) return;
@@ -132,846 +130,389 @@ const FinanceTracker = () => {
     setShowDepositModal(null);
   };
 
-  // Filtered transactions
-  const filteredTransactions = transactions.filter(t => {
-    const matchesTab = activeTab === 'all' || t.type === activeTab;
-    const matchesCategory = selectedCategory === 'all' || t.category === selectedCategory;
-    const matchesSearch = 
-      (t.description || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.paymentMethod.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesTab && matchesCategory && matchesSearch;
+  const filteredTx = transactions.filter(t => {
+    const matchTab = activeTab === 'all' || t.type === activeTab;
+    const matchCat = selectedCategory === 'all' || t.category === selectedCategory;
+    const matchSearch = (t.description || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t.category.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchTab && matchCat && matchSearch;
   });
 
+  const label = (txt) => <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">{txt}</label>;
+
   return (
-    <div className="space-y-8 animate-fadeIn">
-      
-      {/* Top Header & Actions */}
+    <div className="space-y-6 animate-fadeIn">
+
+      {/* ── HEADER ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            <span>Finance & Expense Tracker</span>
-          </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Monitor cashflow, manage category budgets, and reach your savings goals in Indian Rupee (₹).
-          </p>
+          <h1 className="text-2xl font-black text-slate-800 tracking-tight">Finance & Expense Tracker</h1>
+          <p className="text-sm text-slate-500 mt-1 font-medium">Monitor cashflow, manage budgets, and reach savings goals (₹ INR)</p>
         </div>
-
         <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            onClick={exportToCSV}
-            className="inline-flex items-center px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 shadow-sm transition-all"
-          >
-            <Download className="h-4 w-4 mr-1.5 text-slate-500" />
-            Export CSV
-          </button>
-          <button
-            onClick={() => setShowBudgetModal(true)}
-            className="inline-flex items-center px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-50 border border-indigo-100 text-indigo-700 hover:bg-indigo-100 transition-all"
-          >
-            <Target className="h-4 w-4 mr-1.5" />
-            Set Budget
-          </button>
-          <button
-            onClick={() => setShowGoalModal(true)}
-            className="inline-flex items-center px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-violet-50 border border-violet-100 text-violet-700 hover:bg-violet-100 transition-all"
-          >
-            <PiggyBank className="h-4 w-4 mr-1.5" />
-            New Goal
-          </button>
-          <button
-            onClick={() => setShowTxModal(true)}
-            className="inline-flex items-center px-4 py-2 rounded-xl text-xs sm:text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 transition-all active:scale-95"
-          >
-            <Plus className="h-4 w-4 mr-1.5" />
-            Add Transaction
-          </button>
+          {[
+            { label: 'Export CSV',       icon: Download,  onClick: exportToCSV,                    c1: '#6b7280', c2: '#4b5563' },
+            { label: 'Set Budget',       icon: Target,    onClick: () => setShowBudgetModal(true),  c1: '#6366f1', c2: '#8b5cf6' },
+            { label: 'New Goal',         icon: PiggyBank, onClick: () => setShowGoalModal(true),   c1: '#8b5cf6', c2: '#7c3aed' },
+            { label: 'Add Transaction',  icon: Plus,      onClick: () => setShowTxModal(true),     c1: '#10b981', c2: '#059669' },
+          ].map(({ label: lbl, icon: Icon, onClick, c1, c2 }) => (
+            <GradBtn key={lbl} color1={c1} color2={c2} onClick={onClick} className="px-4 py-2.5 text-sm">
+              <Icon className="h-4 w-4" />{lbl}
+            </GradBtn>
+          ))}
         </div>
       </div>
 
-      {/* 4 Financial Stat Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        
-        {/* Total Net Balance */}
-        <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-3xl p-6 text-white shadow-lg relative overflow-hidden">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-300">Total Net Balance</span>
-            <div className="h-8 w-8 rounded-full bg-white/10 flex items-center justify-center font-bold text-emerald-400">
-              ₹
-            </div>
-          </div>
-          <div className="mt-4">
-            <div className="text-3xl sm:text-4xl font-black font-mono">
-              ₹{netBalance.toLocaleString()}
-            </div>
-            <div className="mt-2 flex items-center text-xs text-indigo-200">
-              <span className={`inline-flex items-center font-bold mr-1.5 ${netBalance >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                {netBalance >= 0 ? <TrendingUp className="h-3.5 w-3.5 mr-0.5" /> : <TrendingDown className="h-3.5 w-3.5 mr-0.5" />}
-                {savingsRate}%
-              </span>
-              <span>savings rate</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Total Income */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Monthly Income</span>
-            <div className="h-8 w-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <ArrowDownLeft className="h-4 w-4" />
-            </div>
-          </div>
-          <div className="mt-4">
-            <div className="text-2xl sm:text-3xl font-black text-emerald-600 font-mono">
-              +₹{totalIncome.toLocaleString()}
-            </div>
-            <div className="mt-2 text-xs text-slate-500">
-              {transactions.filter(t => t.type === 'income').length} income transactions
-            </div>
-          </div>
-        </div>
-
-        {/* Total Expenses */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Monthly Expenses</span>
-            <div className="h-8 w-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
-              <ArrowUpRight className="h-4 w-4" />
-            </div>
-          </div>
-          <div className="mt-4">
-            <div className="text-2xl sm:text-3xl font-black text-rose-600 font-mono">
-              -₹{totalExpense.toLocaleString()}
-            </div>
-            <div className="mt-2 text-xs text-slate-500">
-              {transactions.filter(t => t.type === 'expense').length} expense transactions
-            </div>
-          </div>
-        </div>
-
-        {/* Savings Goal Total */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm hover:shadow-md transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">Saved in Goals</span>
-            <div className="h-8 w-8 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center">
-              <PiggyBank className="h-4 w-4" />
-            </div>
-          </div>
-          <div className="mt-4">
-            <div className="text-2xl sm:text-3xl font-black text-violet-600 font-mono">
-              ₹{goals.reduce((acc, g) => acc + (Number(g.currentAmount) || 0), 0).toLocaleString()}
-            </div>
-            <div className="mt-2 text-xs text-slate-500">
-              Across {goals.length} active savings goals
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* Middle Section: Budgets & Savings Goals */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        
-        {/* Category Budgets & Spend Tracker */}
-        <div className="lg:col-span-6 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div>
-              <h3 className="text-base font-bold text-slate-900">Monthly Category Budgets</h3>
-              <p className="text-xs text-slate-500">Track spending limits against real-time expenses</p>
-            </div>
-            <button
-              onClick={() => setShowBudgetModal(true)}
-              className="text-xs font-semibold text-indigo-600 hover:underline flex items-center"
-            >
-              <PlusCircle className="h-3.5 w-3.5 mr-1" /> Add Budget
-            </button>
-          </div>
-
-          <div className="space-y-4 pt-1 max-h-80 overflow-y-auto custom-scrollbar">
-            {budgets.length === 0 ? (
-              <div className="text-center py-8 text-slate-400 text-sm">
-                No category budgets configured yet. Click "Set Budget" to set monthly spending limits!
+      {/* ── 4 STAT CARDS ── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {[
+          { label: 'Net Balance',    value: `₹${netBalance.toLocaleString()}`,   sub: `${savingsRate}% savings rate`, subColor: netBalance >= 0 ? '#10b981' : '#f43f5e', c1: '#0f1223', c2: '#1a1f45', icon: Wallet, textColor: 'white' },
+          { label: 'Total Income',   value: `₹${totalIncome.toLocaleString()}`,  sub: 'All income recorded',           subColor: '#10b981',  c1: '#10b981', c2: '#059669', icon: TrendingUp, textColor: 'white' },
+          { label: 'Total Expenses', value: `₹${totalExpense.toLocaleString()}`, sub: 'All expenses recorded',         subColor: '#f43f5e',  c1: '#f43f5e', c2: '#e11d48', icon: TrendingDown, textColor: 'white' },
+          { label: 'Savings Rate',   value: `${savingsRate}%`,                   sub: netBalance >= 0 ? 'Positive cashflow' : 'Deficit — watch spending', subColor: savingsRate > 30 ? '#10b981' : '#f59e0b', c1: '#6366f1', c2: '#8b5cf6', icon: Target, textColor: 'white' },
+        ].map(({ label: lbl, value, sub, subColor, c1, c2, icon: Icon }) => (
+          <div key={lbl} style={neo.card} className="p-5 hover:-translate-y-0.5 transition-transform duration-200 overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-20 h-20 rounded-full pointer-events-none"
+              style={{ background: `radial-gradient(circle, ${c1}15 0%, transparent 70%)`, transform: 'translate(20%, -20%)' }} />
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{lbl}</span>
+              <div className="h-9 w-9 rounded-xl flex items-center justify-center text-white"
+                style={{ background: `linear-gradient(135deg, ${c1}, ${c2})`, boxShadow: `3px 3px 8px ${c1}40` }}>
+                <Icon className="h-4.5 w-4.5" style={{ height: '1.1rem', width: '1.1rem' }} />
               </div>
-            ) : (
-              budgets.map((b) => {
-                const spent = categoryExpenses[b.category] || 0;
-                const percentage = Math.round((spent / b.monthlyLimit) * 100);
-                const isOverBudget = spent > b.monthlyLimit;
-                const isWarning = percentage >= 80 && !isOverBudget;
-
-                return (
-                  <div key={b._id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200/60 space-y-2">
-                    <div className="flex items-center justify-between text-xs sm:text-sm font-semibold">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-slate-800">{b.category}</span>
-                        {isOverBudget && (
-                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-rose-100 text-rose-700">
-                            <AlertTriangle className="h-3 w-3 mr-0.5" /> Exceeded!
-                          </span>
-                        )}
-                        {isWarning && (
-                          <span className="inline-flex items-center px-1.5 py-0.5 rounded-md text-[10px] font-bold bg-amber-100 text-amber-700">
-                            Near Limit
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-slate-600">
-                        <span className={`font-bold ${isOverBudget ? 'text-rose-600' : 'text-slate-900'}`}>
-                          ₹{spent.toLocaleString()}
-                        </span>
-                        <span className="text-slate-400 font-normal"> / ₹{b.monthlyLimit.toLocaleString()}</span>
-                      </div>
-                    </div>
-
-                    {/* Progress Bar */}
-                    <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          isOverBudget ? 'bg-rose-500' : isWarning ? 'bg-amber-500' : 'bg-emerald-500'
-                        }`}
-                        style={{ width: `${Math.min(percentage, 100)}%` }}
-                      />
-                    </div>
-                    
-                    <div className="flex justify-between text-[11px] text-slate-400">
-                      <span>{percentage}% spent</span>
-                      <span>
-                        {isOverBudget 
-                          ? `₹${(spent - b.monthlyLimit).toLocaleString()} over limit` 
-                          : `₹${(b.monthlyLimit - spent).toLocaleString()} remaining`}
-                      </span>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </div>
-
-        {/* Savings Goals */}
-        <div className="lg:col-span-6 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-4">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-            <div>
-              <h3 className="text-base font-bold text-slate-900">Savings Goals</h3>
-              <p className="text-xs text-slate-500">Fund your future milestones & big purchases</p>
             </div>
-            <button
-              onClick={() => setShowGoalModal(true)}
-              className="text-xs font-semibold text-violet-600 hover:underline flex items-center"
-            >
-              <PlusCircle className="h-3.5 w-3.5 mr-1" /> New Goal
-            </button>
+            <div className="text-2xl font-black text-slate-800 font-mono-display">{value}</div>
+            <div className="text-xs font-bold mt-1.5" style={{ color: subColor }}>{sub}</div>
           </div>
-
-          <div className="space-y-4 pt-1 max-h-80 overflow-y-auto custom-scrollbar">
-            {goals.length === 0 ? (
-              <div className="text-center py-8 text-slate-400 text-sm">
-                No savings goals yet. Create one to start saving up!
-              </div>
-            ) : (
-              goals.map((g) => {
-                const percentage = Math.min(Math.round((g.currentAmount / g.targetAmount) * 100), 100);
-                const isComplete = g.currentAmount >= g.targetAmount;
-
-                return (
-                  <div 
-                    key={g._id} 
-                    className="p-4 rounded-2xl border border-slate-200/70 bg-gradient-to-r from-white to-slate-50/50 hover:shadow-sm transition-all space-y-3"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2.5">
-                        <div 
-                          className="h-8 w-8 rounded-xl flex items-center justify-center text-white text-xs font-bold shadow-sm"
-                          style={{ backgroundColor: g.color || '#6366f1' }}
-                        >
-                          <Target className="h-4 w-4" />
-                        </div>
-                        <div>
-                          <h4 className="text-sm font-bold text-slate-900">{g.title}</h4>
-                          {g.targetDate && (
-                            <span className="text-[11px] text-slate-400">
-                              Target: {new Date(g.targetDate).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() => setShowDepositModal(g)}
-                          className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200/60 transition-colors"
-                        >
-                          + Deposit
-                        </button>
-                        <button
-                          onClick={() => deleteGoal(g._id)}
-                          className="p-1 text-slate-300 hover:text-rose-500 transition-colors"
-                          title="Delete goal"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="flex justify-between text-xs font-semibold text-slate-700 mb-1">
-                        <span>₹{g.currentAmount.toLocaleString()} saved</span>
-                        <span className="text-slate-400">₹{g.targetAmount.toLocaleString()} target ({percentage}%)</span>
-                      </div>
-                      <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all duration-500"
-                          style={{ 
-                            width: `${percentage}%`,
-                            backgroundColor: isComplete ? '#10b981' : (g.color || '#6366f1') 
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </div>
-
+        ))}
       </div>
 
-      {/* Filterable Transaction History */}
-      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm space-y-6">
-        
-        {/* Table Controls */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-100">
-          <div>
-            <h3 className="text-lg font-bold text-slate-900">Transaction History</h3>
-            <p className="text-xs text-slate-500">All recorded incomes and expenditures in INR</p>
-          </div>
+      {/* ── MAIN GRID ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
-          <div className="flex flex-wrap items-center gap-3">
-            {/* Tab filter: All, Income, Expense */}
-            <div className="flex items-center p-1 bg-slate-100 rounded-xl text-xs font-semibold">
-              {['all', 'expense', 'income'].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-3 py-1.5 rounded-lg capitalize transition-all ${
-                    activeTab === tab 
-                      ? 'bg-white text-slate-900 shadow-sm font-bold' 
-                      : 'text-slate-500 hover:text-slate-900'
-                  }`}
-                >
+        {/* LEFT: Transactions */}
+        <div className="lg:col-span-8 space-y-5">
+
+          {/* Filter Bar */}
+          <div style={neo.card} className="p-4 flex flex-col sm:flex-row gap-3">
+            {/* Type tabs */}
+            <div className="flex p-1 gap-1 rounded-xl" style={{ background: '#e4e6ef', boxShadow: 'inset 2px 2px 5px rgba(174,180,200,0.4), inset -2px -2px 5px rgba(255,255,255,0.8)' }}>
+              {['all', 'expense', 'income'].map(tab => (
+                <button key={tab} onClick={() => setActiveTab(tab)}
+                  className="px-3.5 py-1.5 rounded-lg text-xs font-bold capitalize transition-all"
+                  style={activeTab === tab ? { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', boxShadow: '2px 2px 6px rgba(99,102,241,0.35)' } : { color: '#6b7280' }}>
                   {tab}
                 </button>
               ))}
             </div>
-
-            {/* Category Dropdown */}
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="text-xs font-semibold px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-slate-700"
-            >
+            {/* Search */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <input type="text" placeholder="Search transactions..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2.5 text-sm font-medium" style={neo.inset} />
+            </div>
+            {/* Category */}
+            <select value={selectedCategory} onChange={e => setSelectedCategory(e.target.value)}
+              className="text-sm font-bold py-2.5 px-3" style={{ ...neo.inset, cursor: 'pointer', appearance: 'none', minWidth: '140px' }}>
               <option value="all">All Categories</option>
               {CATEGORIES.expense.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
-              {CATEGORIES.income.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
             </select>
+          </div>
 
-            {/* Search Input */}
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search transactions..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-slate-800 w-44 sm:w-56"
-              />
+          {/* Transaction List */}
+          <div style={neo.card} className="p-5">
+            <div className="flex items-center justify-between mb-4 pb-4"
+              style={{ borderBottom: '1px solid rgba(174,180,200,0.35)' }}>
+              <h3 className="text-base font-bold text-slate-800">Transaction History</h3>
+              <span className="text-xs font-bold text-slate-500">{filteredTx.length} entries</span>
+            </div>
+
+            <div className="space-y-2.5 max-h-[520px] overflow-y-auto custom-scrollbar pr-1">
+              {filteredTx.length === 0 ? (
+                <div className="py-16 text-center">
+                  <CreditCard className="h-10 w-10 mx-auto text-slate-300 mb-3" />
+                  <p className="text-sm font-bold text-slate-500">No transactions found</p>
+                  <p className="text-xs text-slate-400 mt-1">Add your first transaction using the button above</p>
+                </div>
+              ) : filteredTx.map(t => (
+                <div key={t._id} style={neo.cardSm} className="flex items-center justify-between px-4 py-3.5 gap-3 hover:-translate-y-px transition-transform duration-150">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="h-9 w-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                      style={t.type === 'income'
+                        ? { background: '#d1fae5', color: '#10b981' }
+                        : { background: '#ffe4e6', color: '#f43f5e' }}>
+                      {t.type === 'income' ? <ArrowDownLeft className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-slate-700 truncate">{t.description || t.category}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded-lg"
+                          style={{ background: '#ede9fe', color: '#7c3aed' }}>{t.category}</span>
+                        <span className="text-[10px] text-slate-400 font-medium">{new Date(t.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+                        {t.paymentMethod && <span className="text-[10px] text-slate-400 font-medium hidden sm:inline">{t.paymentMethod}</span>}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    <span className="text-sm font-black" style={{ color: t.type === 'income' ? '#10b981' : '#f43f5e' }}>
+                      {t.type === 'income' ? '+' : '-'}₹{Number(t.amount).toLocaleString()}
+                    </span>
+                    <button onClick={() => deleteTransaction(t._id)}
+                      className="h-7 w-7 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-all"
+                      style={{ background: '#eef0f5', boxShadow: '2px 2px 5px rgba(174,180,200,0.4), -2px -2px 5px rgba(255,255,255,0.85)' }}
+                      onMouseEnter={e => { e.currentTarget.style.background = '#f43f5e'; }}
+                      onMouseLeave={e => { e.currentTarget.style.background = '#eef0f5'; }}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Transactions Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-slate-100 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                <th className="pb-3 px-3">Transaction</th>
-                <th className="pb-3 px-3">Category</th>
-                <th className="pb-3 px-3">Date</th>
-                <th className="pb-3 px-3">Payment</th>
-                <th className="pb-3 px-3 text-right">Amount (₹)</th>
-                <th className="pb-3 px-3 text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 text-sm">
-              {filteredTransactions.length === 0 ? (
-                <tr>
-                  <td colSpan="6" className="py-10 text-center text-slate-400 text-sm">
-                    No transactions recorded yet. Click "Add Transaction" to create your first entry!
-                  </td>
-                </tr>
-              ) : (
-                filteredTransactions.map((tx) => {
-                  const isIncome = tx.type === 'income';
-                  return (
-                    <tr key={tx._id} className="hover:bg-slate-50/80 transition-colors group">
-                      {/* Description & recurring */}
-                      <td className="py-3.5 px-3">
-                        <div className="flex items-center space-x-3">
-                          <div className={`h-8 w-8 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                            isIncome ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'
-                          }`}>
-                            {isIncome ? <ArrowDownLeft className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
-                          </div>
-                          <div>
-                            <div className="font-semibold text-slate-900 flex items-center gap-1.5">
-                              <span>{tx.description || tx.category}</span>
-                              {tx.isRecurring && (
-                                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold uppercase bg-blue-50 text-blue-700">
-                                  Recurring
-                                </span>
-                              )}
-                            </div>
-                            {tx.tags && tx.tags.length > 0 && (
-                              <div className="flex items-center gap-1 mt-0.5">
-                                {tx.tags.map((tag, i) => (
-                                  <span key={i} className="text-[10px] text-slate-400">#{tag}</span>
-                                ))}
-                              </div>
-                            )}
-                          </div>
+        {/* RIGHT: Budget + Goals */}
+        <div className="lg:col-span-4 space-y-5">
+
+          {/* Budget Overview */}
+          <div style={neo.card} className="p-5">
+            <div className="flex items-center justify-between mb-4 pb-4"
+              style={{ borderBottom: '1px solid rgba(174,180,200,0.35)' }}>
+              <h3 className="text-base font-bold text-slate-800">Category Budgets</h3>
+              <button onClick={() => setShowBudgetModal(true)}
+                className="text-xs font-bold text-indigo-600 hover:underline flex items-center gap-0.5">
+                <Plus className="h-3 w-3" /> Set
+              </button>
+            </div>
+
+            <div className="space-y-4 max-h-72 overflow-y-auto custom-scrollbar pr-1">
+              {Object.entries(categoryExpenses).length === 0 ? (
+                <p className="text-xs text-slate-400 font-medium text-center py-4">No expense categories yet</p>
+              ) : Object.entries(categoryExpenses).sort(([, a], [, b]) => b - a).map(([cat, spent]) => {
+                const budget = budgets[cat];
+                const pct = budget ? Math.min(100, Math.round((spent / budget) * 100)) : null;
+                const isOver = pct && pct >= 100;
+                return (
+                  <div key={cat}>
+                    <div className="flex justify-between text-xs font-bold mb-1.5">
+                      <span className="text-slate-600 flex items-center gap-1">
+                        {isOver && <AlertTriangle className="h-3 w-3 text-rose-500" />}
+                        {cat}
+                      </span>
+                      <span className="text-slate-800">₹{spent.toLocaleString()}{budget ? ` / ₹${budget.toLocaleString()}` : ''}</span>
+                    </div>
+                    {budget && (
+                      <div style={neo.progress}>
+                        <div style={{
+                          height: '100%', borderRadius: '999px',
+                          width: `${pct}%`,
+                          background: isOver ? 'linear-gradient(90deg, #f43f5e, #e11d48)' : pct > 75 ? 'linear-gradient(90deg, #f59e0b, #d97706)' : 'linear-gradient(90deg, #10b981, #059669)',
+                          transition: 'width 0.5s ease',
+                        }} />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Savings Goals */}
+          <div style={neo.card} className="p-5">
+            <div className="flex items-center justify-between mb-4 pb-4"
+              style={{ borderBottom: '1px solid rgba(174,180,200,0.35)' }}>
+              <h3 className="text-base font-bold text-slate-800">Savings Goals</h3>
+              <button onClick={() => setShowGoalModal(true)}
+                className="text-xs font-bold text-violet-600 hover:underline flex items-center gap-0.5">
+                <Plus className="h-3 w-3" /> Add
+              </button>
+            </div>
+
+            <div className="space-y-4 max-h-80 overflow-y-auto custom-scrollbar pr-1">
+              {goals.length === 0 ? (
+                <div className="text-center py-8">
+                  <PiggyBank className="h-8 w-8 mx-auto text-slate-300 mb-2" />
+                  <p className="text-xs text-slate-400 font-medium">No savings goals yet</p>
+                </div>
+              ) : goals.map(goal => {
+                const pct = goal.targetAmount > 0 ? Math.min(100, Math.round((goal.currentAmount / goal.targetAmount) * 100)) : 0;
+                return (
+                  <div key={goal._id} style={{ ...neo.cardSm, padding: '1rem' }}>
+                    <div className="flex items-start justify-between gap-2 mb-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-8 w-8 rounded-xl flex-shrink-0"
+                          style={{ background: `linear-gradient(135deg, ${goal.color || '#6366f1'}, ${goal.color || '#6366f1'}aa)`, boxShadow: `3px 3px 8px ${goal.color || '#6366f1'}35` }}>
+                          <PiggyBank className="h-full w-full p-1.5 text-white" />
                         </div>
-                      </td>
-
-                      {/* Category */}
-                      <td className="py-3.5 px-3">
-                        <span className="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700">
-                          {tx.category}
-                        </span>
-                      </td>
-
-                      {/* Date */}
-                      <td className="py-3.5 px-3 text-xs text-slate-500 font-medium">
-                        {new Date(tx.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                      </td>
-
-                      {/* Payment Method */}
-                      <td className="py-3.5 px-3 text-xs text-slate-600">
-                        <span className="flex items-center space-x-1">
-                          <CreditCard className="h-3.5 w-3.5 text-slate-400" />
-                          <span>{tx.paymentMethod}</span>
-                        </span>
-                      </td>
-
-                      {/* Amount */}
-                      <td className="py-3.5 px-3 text-right font-bold font-mono">
-                        <span className={isIncome ? 'text-emerald-600' : 'text-slate-900'}>
-                          {isIncome ? '+' : '-'}₹{Number(tx.amount).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </span>
-                      </td>
-
-                      {/* Delete */}
-                      <td className="py-3.5 px-3 text-center">
-                        <button
-                          onClick={() => deleteTransaction(tx._id)}
-                          className="p-1.5 rounded-lg text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                          title="Delete transaction"
-                        >
-                          <Trash2 className="h-4 w-4" />
+                        <div>
+                          <p className="text-sm font-bold text-slate-700 truncate max-w-[120px]">{goal.title}</p>
+                          <p className="text-[10px] text-slate-400 font-medium">₹{goal.currentAmount.toLocaleString()} / ₹{goal.targetAmount.toLocaleString()}</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-1">
+                        <button onClick={() => setShowDepositModal(goal)}
+                          className="text-[10px] font-black px-2.5 py-1.5 rounded-xl text-white"
+                          style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '2px 2px 5px rgba(16,185,129,0.35)' }}>
+                          +₹
                         </button>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+                        <button onClick={() => deleteGoal(goal._id)}
+                          className="h-7 w-7 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-all"
+                          style={{ ...neo.cardSm, borderRadius: '10px' }}
+                          onMouseEnter={e => { e.currentTarget.style.background = '#f43f5e'; }}
+                          onMouseLeave={e => { e.currentTarget.style.background = '#eef0f5'; }}>
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </div>
+                    </div>
+                    <div style={neo.progress}>
+                      <div style={{ height: '100%', borderRadius: '999px', width: `${pct}%`, background: `linear-gradient(90deg, ${goal.color || '#6366f1'}, ${goal.color || '#8b5cf6'})`, transition: 'width 0.5s ease' }} />
+                    </div>
+                    <p className="text-[10px] font-bold mt-1.5" style={{ color: goal.color || '#6366f1' }}>{pct}% saved</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ================= MODALS ================= */}
+      {/* ======================== MODALS ======================== */}
 
-      {/* 1. Add Transaction Modal */}
+      {/* Add Transaction Modal */}
       {showTxModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl border border-slate-100 space-y-6 relative max-h-[90vh] overflow-y-auto custom-scrollbar">
-            
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-xl font-bold text-slate-900">Record Transaction</h3>
-              <button 
-                onClick={() => setShowTxModal(false)}
-                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg"
-              >
-                <X className="h-5 w-5" />
-              </button>
+        <Modal title="Add Transaction" onClose={() => setShowTxModal(false)}>
+          <form onSubmit={handleTxSubmit} className="space-y-4">
+            {/* Type Toggle */}
+            <div>
+              {label('Type')}
+              <div className="flex gap-2">
+                {['expense', 'income'].map(t => (
+                  <button key={t} type="button" onClick={() => setTxForm(p => ({ ...p, type: t }))}
+                    className="flex-1 py-2.5 rounded-2xl text-sm font-bold capitalize transition-all"
+                    style={txForm.type === t ? {
+                      background: t === 'income' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #f43f5e, #e11d48)',
+                      color: 'white', boxShadow: `3px 3px 8px ${t === 'income' ? 'rgba(16,185,129,0.4)' : 'rgba(244,63,94,0.4)'}`,
+                    } : { ...neo.cardSm, color: '#6b7280' }}>
+                    {t === 'income' ? '+ Income' : '- Expense'}
+                  </button>
+                ))}
+              </div>
             </div>
-
-            <form onSubmit={handleTxSubmit} className="space-y-4">
-              
-              {/* Type Switcher */}
-              <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-2xl">
-                <button
-                  type="button"
-                  onClick={() => setTxForm(prev => ({ ...prev, type: 'expense', category: 'Food & Dining' }))}
-                  className={`py-2 text-xs font-bold rounded-xl transition-all ${
-                    txForm.type === 'expense' 
-                      ? 'bg-white text-rose-600 shadow-sm' 
-                      : 'text-slate-500 hover:text-slate-900'
-                  }`}
-                >
-                  Expense
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTxForm(prev => ({ ...prev, type: 'income', category: 'Salary' }))}
-                  className={`py-2 text-xs font-bold rounded-xl transition-all ${
-                    txForm.type === 'income' 
-                      ? 'bg-white text-emerald-600 shadow-sm' 
-                      : 'text-slate-500 hover:text-slate-900'
-                  }`}
-                >
-                  Income
-                </button>
-              </div>
-
-              {/* Amount */}
+            <div>
+              {label('Amount (₹) *')}
+              <NeoInput type="number" min="0.01" step="0.01" required placeholder="0.00" value={txForm.amount} onChange={e => setTxForm(p => ({ ...p, amount: e.target.value }))} />
+            </div>
+            <div>
+              {label('Category')}
+              <NeoSelect value={txForm.category} onChange={e => setTxForm(p => ({ ...p, category: e.target.value }))}>
+                {(txForm.type === 'income' ? CATEGORIES.income : CATEGORIES.expense).map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+              </NeoSelect>
+            </div>
+            <div>
+              {label('Description')}
+              <NeoInput type="text" placeholder="e.g. Lunch at Café" value={txForm.description} onChange={e => setTxForm(p => ({ ...p, description: e.target.value }))} />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Amount (₹) *
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                  <input
-                    type="number"
-                    step="0.01"
-                    required
-                    placeholder="0.00"
-                    value={txForm.amount}
-                    onChange={(e) => setTxForm({ ...txForm, amount: e.target.value })}
-                    className="w-full pl-8 pr-4 py-2.5 text-base font-bold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                  />
-                </div>
+                {label('Payment Method')}
+                <NeoSelect value={txForm.paymentMethod} onChange={e => setTxForm(p => ({ ...p, paymentMethod: e.target.value }))}>
+                  {['UPI / Bank', 'Cash', 'Credit Card', 'Debit Card', 'Net Banking', 'Wallet'].map(m => <option key={m} value={m}>{m}</option>)}
+                </NeoSelect>
               </div>
-
-              {/* Category */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Category *
-                </label>
-                <select
-                  value={txForm.category}
-                  onChange={(e) => setTxForm({ ...txForm, category: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                >
-                  {(txForm.type === 'income' ? CATEGORIES.income : CATEGORIES.expense).map(c => (
-                    <option key={c.name} value={c.name}>{c.name}</option>
-                  ))}
-                </select>
+                {label('Date')}
+                <NeoInput type="date" value={txForm.date} onChange={e => setTxForm(p => ({ ...p, date: e.target.value }))} />
               </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Description
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. Monthly Grocery, Client Milestone, Electricity Bill"
-                  value={txForm.description}
-                  onChange={(e) => setTxForm({ ...txForm, description: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
-                />
-              </div>
-
-              {/* Date & Payment Method */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    Date
-                  </label>
-                  <input
-                    type="date"
-                    value={txForm.date}
-                    onChange={(e) => setTxForm({ ...txForm, date: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    Payment Method
-                  </label>
-                  <select
-                    value={txForm.paymentMethod}
-                    onChange={(e) => setTxForm({ ...txForm, paymentMethod: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                  >
-                    <option value="UPI / Bank">UPI / Net Banking</option>
-                    <option value="Debit Card">Debit Card</option>
-                    <option value="Credit Card">Credit Card</option>
-                    <option value="Cash">Cash</option>
-                    <option value="Crypto">Crypto</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Tags & Recurring */}
-              <div className="flex items-center justify-between pt-2">
-                <label className="flex items-center space-x-2 text-xs font-semibold text-slate-700 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={txForm.isRecurring}
-                    onChange={(e) => setTxForm({ ...txForm, isRecurring: e.target.checked })}
-                    className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
-                  />
-                  <span>Mark as Recurring (Monthly)</span>
-                </label>
-              </div>
-
-              <div className="pt-3 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowTxModal(false)}
-                  className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className={`px-5 py-2 text-sm font-bold text-white rounded-xl shadow-md transition-all ${
-                    txForm.type === 'income' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-rose-600 hover:bg-rose-700'
-                  }`}
-                >
-                  Save Transaction
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button type="button" onClick={() => setShowTxModal(false)}
+                className="flex-1 py-3 rounded-2xl text-sm font-bold text-slate-600"
+                style={{ ...neo.cardSm }}>Cancel</button>
+              <GradBtn type="submit" color1={txForm.type === 'income' ? '#10b981' : '#f43f5e'} color2={txForm.type === 'income' ? '#059669' : '#e11d48'}
+                className="flex-1 py-3 text-sm">
+                Add {txForm.type === 'income' ? 'Income' : 'Expense'}
+              </GradBtn>
+            </div>
+          </form>
+        </Modal>
       )}
 
-      {/* 2. Set Category Budget Modal */}
+      {/* Set Budget Modal */}
       {showBudgetModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-xl font-bold text-slate-900">Set Monthly Budget</h3>
-              <button onClick={() => setShowBudgetModal(false)} className="p-1 text-slate-400 hover:text-slate-600">
-                <X className="h-5 w-5" />
-              </button>
+        <Modal title="Set Category Budget" onClose={() => setShowBudgetModal(false)}>
+          <form onSubmit={handleBudgetSubmit} className="space-y-4">
+            <div>
+              {label('Category')}
+              <NeoSelect value={budgetForm.category} onChange={e => setBudgetForm(p => ({ ...p, category: e.target.value }))}>
+                {CATEGORIES.expense.map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+              </NeoSelect>
             </div>
-
-            <form onSubmit={handleBudgetSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Category
-                </label>
-                <select
-                  value={budgetForm.category}
-                  onChange={(e) => setBudgetForm({ ...budgetForm, category: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                >
-                  {CATEGORIES.expense.map(c => (
-                    <option key={c.name} value={c.name}>{c.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Monthly Limit (₹) *
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                  <input
-                    type="number"
-                    step="1"
-                    required
-                    placeholder="10000"
-                    value={budgetForm.monthlyLimit}
-                    onChange={(e) => setBudgetForm({ ...budgetForm, monthlyLimit: e.target.value })}
-                    className="w-full pl-8 pr-4 py-2.5 text-base font-bold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-3 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowBudgetModal(false)}
-                  className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-md"
-                >
-                  Save Budget Limit
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            <div>
+              {label('Monthly Limit (₹) *')}
+              <NeoInput type="number" min="1" required placeholder="e.g. 5000" value={budgetForm.monthlyLimit} onChange={e => setBudgetForm(p => ({ ...p, monthlyLimit: e.target.value }))} />
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button type="button" onClick={() => setShowBudgetModal(false)} className="flex-1 py-3 rounded-2xl text-sm font-bold text-slate-600" style={neo.cardSm}>Cancel</button>
+              <GradBtn type="submit" color1="#6366f1" color2="#8b5cf6" className="flex-1 py-3 text-sm">Save Budget</GradBtn>
+            </div>
+          </form>
+        </Modal>
       )}
 
-      {/* 3. New Savings Goal Modal */}
+      {/* Add Goal Modal */}
       {showGoalModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h3 className="text-xl font-bold text-slate-900">Create Savings Goal</h3>
-              <button onClick={() => setShowGoalModal(false)} className="p-1 text-slate-400 hover:text-slate-600">
-                <X className="h-5 w-5" />
-              </button>
+        <Modal title="New Savings Goal" onClose={() => setShowGoalModal(false)}>
+          <form onSubmit={handleGoalSubmit} className="space-y-4">
+            <div>
+              {label('Goal Title *')}
+              <NeoInput type="text" required placeholder="e.g. Emergency Fund" value={goalForm.title} onChange={e => setGoalForm(p => ({ ...p, title: e.target.value }))} />
             </div>
-
-            <form onSubmit={handleGoalSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Goal Title *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. New Laptop, Emergency Fund, Trip"
-                  value={goalForm.title}
-                  onChange={(e) => setGoalForm({ ...goalForm, title: e.target.value })}
-                  className="w-full px-3.5 py-2.5 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                />
+                {label('Target Amount (₹) *')}
+                <NeoInput type="number" min="1" required placeholder="50000" value={goalForm.targetAmount} onChange={e => setGoalForm(p => ({ ...p, targetAmount: e.target.value }))} />
               </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    Target Amount (₹) *
-                  </label>
-                  <input
-                    type="number"
-                    required
-                    placeholder="100000"
-                    value={goalForm.targetAmount}
-                    onChange={(e) => setGoalForm({ ...goalForm, targetAmount: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm font-semibold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                    Already Saved (₹)
-                  </label>
-                  <input
-                    type="number"
-                    placeholder="25000"
-                    value={goalForm.currentAmount}
-                    onChange={(e) => setGoalForm({ ...goalForm, currentAmount: e.target.value })}
-                    className="w-full px-3.5 py-2 text-sm font-semibold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                  />
-                </div>
-              </div>
-
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Target Date
-                </label>
-                <input
-                  type="date"
-                  value={goalForm.targetDate}
-                  onChange={(e) => setGoalForm({ ...goalForm, targetDate: e.target.value })}
-                  className="w-full px-3.5 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
-                />
+                {label('Already Saved (₹)')}
+                <NeoInput type="number" min="0" placeholder="0" value={goalForm.currentAmount} onChange={e => setGoalForm(p => ({ ...p, currentAmount: e.target.value }))} />
               </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Accent Color
-                </label>
-                <div className="flex gap-3">
-                  {['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#3b82f6'].map(color => (
-                    <button
-                      key={color}
-                      type="button"
-                      onClick={() => setGoalForm({ ...goalForm, color })}
-                      className={`h-8 w-8 rounded-full transition-transform ${goalForm.color === color ? 'scale-125 ring-2 ring-offset-2 ring-slate-400' : ''}`}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
+            </div>
+            <div>
+              {label('Target Date')}
+              <NeoInput type="date" value={goalForm.targetDate} onChange={e => setGoalForm(p => ({ ...p, targetDate: e.target.value }))} />
+            </div>
+            <div>
+              {label('Accent Color')}
+              <div className="flex gap-2">
+                {['#6366f1', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6', '#3b82f6'].map(color => (
+                  <button key={color} type="button" onClick={() => setGoalForm(p => ({ ...p, color }))}
+                    className="h-8 w-8 rounded-full transition-transform"
+                    style={{ background: color, transform: goalForm.color === color ? 'scale(1.25)' : 'scale(1)', boxShadow: goalForm.color === color ? `0 0 0 3px white, 0 0 0 5px ${color}` : 'none' }} />
+                ))}
               </div>
-
-              <div className="pt-3 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowGoalModal(false)}
-                  className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 text-sm font-bold bg-violet-600 hover:bg-violet-700 text-white rounded-xl shadow-md"
-                >
-                  Create Goal
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button type="button" onClick={() => setShowGoalModal(false)} className="flex-1 py-3 rounded-2xl text-sm font-bold text-slate-600" style={neo.cardSm}>Cancel</button>
+              <GradBtn type="submit" color1="#8b5cf6" color2="#7c3aed" className="flex-1 py-3 text-sm">Create Goal</GradBtn>
+            </div>
+          </form>
+        </Modal>
       )}
 
-      {/* 4. Deposit Funds Modal */}
+      {/* Deposit Modal */}
       {showDepositModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl border border-slate-100 space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div>
-                <h3 className="text-lg font-bold text-slate-900">Deposit Funds</h3>
-                <p className="text-xs text-slate-500">Into: {showDepositModal.title}</p>
-              </div>
-              <button onClick={() => setShowDepositModal(null)} className="p-1 text-slate-400 hover:text-slate-600">
-                <X className="h-5 w-5" />
-              </button>
+        <Modal title={`Deposit to "${showDepositModal.title}"`} onClose={() => setShowDepositModal(null)}>
+          <form onSubmit={handleDepositSubmit} className="space-y-4">
+            <div>
+              {label('Deposit Amount (₹) *')}
+              <NeoInput type="number" min="1" required placeholder="Enter amount" value={depositAmount} onChange={e => setDepositAmount(e.target.value)} autoFocus />
             </div>
-
-            <form onSubmit={handleDepositSubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">
-                  Deposit Amount (₹) *
-                </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-bold">₹</span>
-                  <input
-                    type="number"
-                    step="1"
-                    required
-                    autoFocus
-                    placeholder="5000"
-                    value={depositAmount}
-                    onChange={(e) => setDepositAmount(e.target.value)}
-                    className="w-full pl-8 pr-4 py-2.5 text-lg font-bold bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500"
-                  />
-                </div>
-              </div>
-
-              <div className="pt-2 flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowDepositModal(null)}
-                  className="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md"
-                >
-                  Confirm Deposit
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
+            <div className="flex gap-3 pt-2">
+              <button type="button" onClick={() => setShowDepositModal(null)} className="flex-1 py-3 rounded-2xl text-sm font-bold text-slate-600" style={neo.cardSm}>Cancel</button>
+              <GradBtn type="submit" color1="#10b981" color2="#059669" className="flex-1 py-3 text-sm">Add Deposit</GradBtn>
+            </div>
+          </form>
+        </Modal>
       )}
 
     </div>

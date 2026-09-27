@@ -8,7 +8,6 @@ import {
   Menu, 
   X,
   Sparkles,
-  ChevronRight,
   Bot
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
@@ -19,159 +18,215 @@ const Layout = ({ children }) => {
   const location = useLocation();
 
   const navItems = [
-    { 
-      name: 'Overview', 
-      path: '/overview', 
-      icon: LayoutDashboard,
-      color: 'text-blue-500'
-    },
-    { 
-      name: 'Finance', 
-      path: '/finance', 
-      icon: Wallet,
-      color: 'text-emerald-500'
-    },
-    { 
-      name: 'Study Planner', 
-      path: '/study', 
-      icon: BookOpen,
-      color: 'text-violet-600',
-      badge: 'Pomodoro'
-    },
-    { 
-      name: 'Apex AI', 
-      path: '/ai', 
-      icon: Bot,
-      color: 'text-indigo-500',
-      badge: 'Beta'
-    },
+    { name: 'Overview',      path: '/overview', icon: LayoutDashboard, color: '#6366f1' },
+    { name: 'Finance',       path: '/finance',  icon: Wallet,          color: '#10b981' },
+    { name: 'Study Planner', path: '/study',    icon: BookOpen,        color: '#8b5cf6', badge: 'Pomodoro' },
+    { name: 'Apex AI',       path: '/ai',       icon: Bot,             color: '#6366f1', badge: 'Beta' },
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden bg-transparent">
+    <div className="flex h-screen overflow-hidden" style={{ background: '#eef0f5' }}>
       
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Overlay */}
       {isMobileMenuOpen && (
-        <div 
-          className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40 lg:hidden"
+        <div
+          className="fixed inset-0 z-40 lg:hidden"
+          style={{ background: 'rgba(15, 18, 35, 0.5)', backdropFilter: 'blur(4px)' }}
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
-      {/* Sidebar */}
-      <aside className={`
-        fixed lg:static inset-y-0 left-0 z-50
-        w-72 m-4 lg:m-6 rounded-3xl
-        bg-white/80 backdrop-blur-xl border border-slate-200/60
-        shadow-[0_20px_50px_rgba(8,_112,_184,_0.07)]
-        transform transition-all duration-500 ease-in-out flex flex-col
-        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-[150%] lg:translate-x-0'}
-      `}>
+      {/* ======================== SIDEBAR ======================== */}
+      <aside
+        className={`
+          fixed lg:static inset-y-0 left-0 z-50
+          flex flex-col
+          w-72
+          transition-transform duration-500 ease-in-out
+          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+        `}
+        style={{
+          margin: '1.25rem',
+          marginRight: '0',
+          height: 'calc(100vh - 2.5rem)',
+          borderRadius: '24px',
+          background: '#eef0f5',
+          boxShadow: '10px 10px 30px rgba(174, 180, 200, 0.6), -10px -10px 30px rgba(255, 255, 255, 0.85)',
+          border: '1px solid rgba(255, 255, 255, 0.8)',
+        }}
+      >
         {/* Brand */}
-        <div className="h-24 flex items-center px-8 border-b border-slate-100/50">
-          <div className="flex items-center space-x-3 group cursor-pointer">
-            <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 p-2.5 rounded-xl shadow-lg shadow-indigo-500/30 group-hover:shadow-indigo-500/50 transition-all duration-300 group-hover:scale-105 group-active:scale-95">
-              <Sparkles className="h-6 w-6 text-white" />
+        <div className="flex items-center px-6 py-6 gap-3" style={{ borderBottom: '1px solid rgba(174, 180, 200, 0.3)' }}>
+          <div
+            className="flex items-center justify-center h-11 w-11 rounded-2xl"
+            style={{
+              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+              boxShadow: '4px 4px 12px rgba(99, 102, 241, 0.4), -2px -2px 8px rgba(255,255,255,0.6)',
+            }}
+          >
+            <Sparkles className="h-5 w-5 text-white" />
+          </div>
+          <div className="flex-1">
+            <div className="text-xl font-black text-slate-800 tracking-tight">
+              Apex<span className="text-indigo-600">Hub</span>
             </div>
-            <div>
-              <span className="text-2xl font-black tracking-tight text-slate-800">Apex<span className="text-indigo-600">Hub</span></span>
-              <p className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] -mt-1 group-hover:text-indigo-400 transition-colors">Workspace</p>
+            <div className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.18em] -mt-0.5">
+              AI Workspace
             </div>
           </div>
-          <button 
-            className="ml-auto lg:hidden p-2 text-slate-400 hover:text-slate-600 bg-slate-50 rounded-xl"
+          <button
+            className="lg:hidden p-2 rounded-xl text-slate-500 hover:text-slate-700"
+            style={{ boxShadow: '3px 3px 8px rgba(174,180,200,0.5), -3px -3px 8px rgba(255,255,255,0.85)' }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-4 py-8 space-y-2">
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
           {navItems.map((item) => {
             const isActive = location.pathname.startsWith(item.path);
             const Icon = item.icon;
-            
             return (
               <NavLink
                 key={item.path}
                 to={item.path}
-                className={({ isActive }) => `
-                  group flex items-center justify-between px-4 py-3.5 rounded-2xl
-                  transition-all duration-300 font-semibold text-sm
-                  ${isActive 
-                    ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/10' 
-                    : 'text-slate-500 hover:bg-white hover:text-slate-900 hover:shadow-sm'
-                  }
-                `}
                 onClick={() => setIsMobileMenuOpen(false)}
+                className="block"
               >
-                <div className="flex items-center space-x-3">
-                  <div className={`p-1.5 rounded-lg transition-colors ${isActive ? 'bg-white/10' : 'bg-slate-50 group-hover:bg-indigo-50'}`}>
-                    <Icon className={`h-5 w-5 ${isActive ? 'text-white' : item.color}`} />
+                <div
+                  className="flex items-center justify-between px-4 py-3.5 rounded-2xl cursor-pointer group"
+                  style={isActive ? {
+                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                    boxShadow: '4px 4px 12px rgba(99,102,241,0.35), -2px -2px 8px rgba(255,255,255,0.5)',
+                  } : {
+                    background: '#eef0f5',
+                    boxShadow: '3px 3px 8px rgba(174,180,200,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
+                    border: '1px solid rgba(255,255,255,0.7)',
+                  }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="flex items-center justify-center h-8 w-8 rounded-xl"
+                      style={isActive ? {
+                        background: 'rgba(255,255,255,0.2)',
+                      } : {
+                        background: '#eef0f5',
+                        boxShadow: '2px 2px 6px rgba(174,180,200,0.5), -2px -2px 6px rgba(255,255,255,0.85)',
+                      }}
+                    >
+                      <Icon
+                        className="h-4 w-4"
+                        style={{ color: isActive ? 'rgba(255,255,255,0.95)' : item.color }}
+                      />
+                    </div>
+                    <span
+                      className="text-sm font-bold"
+                      style={{ color: isActive ? 'white' : '#3d4663' }}
+                    >
+                      {item.name}
+                    </span>
                   </div>
-                  <span>{item.name}</span>
+                  {item.badge && (
+                    <span
+                      className="text-[9px] font-black uppercase tracking-wider px-2 py-1 rounded-lg"
+                      style={isActive ? {
+                        background: 'rgba(255,255,255,0.2)',
+                        color: 'rgba(255,255,255,0.9)',
+                      } : {
+                        background: '#e8eaf2',
+                        color: '#6366f1',
+                        boxShadow: '2px 2px 4px rgba(174,180,200,0.4), -1px -1px 4px rgba(255,255,255,0.9)',
+                      }}
+                    >
+                      {item.badge}
+                    </span>
+                  )}
                 </div>
-                
-                {item.badge && (
-                  <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-lg ${
-                    isActive ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-500 group-hover:bg-indigo-100 group-hover:text-indigo-600'
-                  }`}>
-                    {item.badge}
-                  </span>
-                )}
               </NavLink>
             );
           })}
         </nav>
 
-        {/* User Profile & Logout */}
-        <div className="p-4 border-t border-slate-100/50">
-          <div className="bg-slate-50 rounded-2xl p-4 flex flex-col space-y-3">
-            <div className="flex items-center space-x-3">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-indigo-100 to-purple-100 flex items-center justify-center text-indigo-700 font-bold text-lg border border-indigo-200">
+        {/* User Profile */}
+        <div className="p-4" style={{ borderTop: '1px solid rgba(174, 180, 200, 0.3)' }}>
+          <div
+            className="rounded-2xl p-4"
+            style={{
+              background: '#eef0f5',
+              boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)',
+            }}
+          >
+            <div className="flex items-center gap-3 mb-3">
+              <div
+                className="h-10 w-10 rounded-full flex items-center justify-center text-indigo-600 font-black text-lg"
+                style={{
+                  background: '#eef0f5',
+                  boxShadow: '3px 3px 8px rgba(174,180,200,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
+                  border: '2px solid rgba(255,255,255,0.8)',
+                }}
+              >
                 {user?.name?.charAt(0).toUpperCase() || 'U'}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold text-slate-800 truncate">{user?.name || 'User'}</p>
-                <p className="text-xs font-medium text-slate-400 truncate">{user?.email || 'user@example.com'}</p>
+                <p className="text-sm font-bold text-slate-700 truncate">{user?.name || 'User'}</p>
+                <p className="text-[11px] text-slate-400 truncate font-medium">{user?.email || ''}</p>
               </div>
             </div>
-            <button 
+            <button
               onClick={logout}
-              className="w-full flex items-center justify-center space-x-2 px-4 py-2.5 bg-white border border-slate-200/60 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 text-slate-500 rounded-xl transition-all duration-300 text-sm font-bold shadow-sm"
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold text-slate-500 hover:text-rose-600"
+              style={{
+                background: '#eef0f5',
+                boxShadow: '3px 3px 7px rgba(174,180,200,0.5), -3px -3px 7px rgba(255,255,255,0.85)',
+                border: '1px solid rgba(255,255,255,0.7)',
+              }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = 'inset 2px 2px 5px rgba(174,180,200,0.4), inset -2px -2px 5px rgba(255,255,255,0.8)'; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = '3px 3px 7px rgba(174,180,200,0.5), -3px -3px 7px rgba(255,255,255,0.85)'; }}
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut className="h-3.5 w-3.5" />
               <span>Sign Out</span>
             </button>
           </div>
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+      {/* ======================== MAIN CONTENT ======================== */}
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile Header */}
-        <div className="lg:hidden h-20 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 flex items-center justify-between px-6 z-30 shadow-sm mt-4 mx-4 rounded-3xl">
-          <div className="flex items-center space-x-2">
-            <Sparkles className="h-6 w-6 text-indigo-600" />
-            <span className="text-xl font-black text-slate-800">ApexHub</span>
+        <div
+          className="lg:hidden flex items-center justify-between px-5 py-4 mx-5 mt-5"
+          style={{
+            borderRadius: '20px',
+            background: '#eef0f5',
+            boxShadow: '6px 6px 16px rgba(174,180,200,0.6), -6px -6px 16px rgba(255,255,255,0.85)',
+            border: '1px solid rgba(255,255,255,0.7)',
+          }}
+        >
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-indigo-600" />
+            <span className="text-lg font-black text-slate-800">ApexHub</span>
           </div>
-          <button 
+          <button
             onClick={() => setIsMobileMenuOpen(true)}
-            className="p-2 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-xl transition-colors border border-slate-200/60"
+            className="p-2 rounded-xl text-slate-500"
+            style={{
+              background: '#eef0f5',
+              boxShadow: '3px 3px 8px rgba(174,180,200,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
+            }}
           >
-            <Menu className="h-6 w-6" />
+            <Menu className="h-5 w-5" />
           </button>
         </div>
 
         {/* Page Content */}
-        <div className="flex-1 overflow-auto custom-scrollbar p-4 lg:p-6 lg:pl-0 pb-12 lg:pb-12">
-          <div className="min-h-full pb-12">
+        <div className="flex-1 overflow-auto custom-scrollbar p-5 lg:p-6 lg:pl-4 pb-16">
+          <div className="animate-fadeIn">
             {children}
           </div>
         </div>
       </main>
-      
     </div>
   );
 };

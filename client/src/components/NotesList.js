@@ -1,7 +1,22 @@
 import React, { useState } from 'react';
-import { Plus, Edit, Trash2, MessageSquare } from 'lucide-react';
+import { Plus, Edit, Trash2, MessageSquare, Check, X } from 'lucide-react';
 import { format } from 'date-fns';
 import { useTodos } from '../contexts/TodoContext';
+
+const neoInset = {
+  background: '#e4e6ef',
+  boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)',
+  borderRadius: '12px',
+  border: '1px solid rgba(255,255,255,0.4)',
+  width: '100%',
+  padding: '0.5rem 0.75rem',
+  fontSize: '0.8rem',
+  fontWeight: '500',
+  color: '#374151',
+  outline: 'none',
+  resize: 'none',
+  fontFamily: 'Plus Jakarta Sans, sans-serif',
+};
 
 const NotesList = ({ todoId, notes }) => {
   const { addNote, updateNote, deleteNote } = useTodos();
@@ -14,86 +29,77 @@ const NotesList = ({ todoId, notes }) => {
   const handleAddNote = async (e) => {
     e.preventDefault();
     if (!newNoteContent.trim()) return;
-
     setLoading(true);
     const result = await addNote(todoId, newNoteContent.trim());
-    if (result.success) {
-      setNewNoteContent('');
-      setShowAddForm(false);
-    }
+    if (result.success) { setNewNoteContent(''); setShowAddForm(false); }
     setLoading(false);
   };
 
   const handleEditNote = async (noteId) => {
     if (!editNoteContent.trim()) return;
-
     setLoading(true);
     const result = await updateNote(todoId, noteId, editNoteContent.trim());
-    if (result.success) {
-      setEditingNote(null);
-      setEditNoteContent('');
-    }
+    if (result.success) { setEditingNote(null); setEditNoteContent(''); }
     setLoading(false);
   };
 
   const handleDeleteNote = async (noteId) => {
-    if (window.confirm('Are you sure you want to delete this note?')) {
-      await deleteNote(todoId, noteId);
-    }
+    if (window.confirm('Delete this note?')) await deleteNote(todoId, noteId);
   };
 
-  const startEditing = (note) => {
-    setEditingNote(note._id);
-    setEditNoteContent(note.content);
-  };
-
-  const cancelEditing = () => {
-    setEditingNote(null);
-    setEditNoteContent('');
-  };
+  const startEditing = (note) => { setEditingNote(note._id); setEditNoteContent(note.content); };
+  const cancelEditing = () => { setEditingNote(null); setEditNoteContent(''); };
 
   return (
     <div className="space-y-3">
+      {/* Header */}
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-medium text-gray-900 flex items-center">
-          <MessageSquare className="w-4 h-4 mr-1" />
+        <h4 className="text-xs font-bold text-slate-600 flex items-center gap-1.5 uppercase tracking-wider">
+          <MessageSquare className="h-3.5 w-3.5 text-indigo-500" />
           Notes ({notes.length})
         </h4>
         <button
           onClick={() => setShowAddForm(!showAddForm)}
-          className="text-xs text-primary-600 hover:text-primary-700 flex items-center"
+          className="flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-700 px-3 py-1.5 rounded-xl transition-colors"
+          style={{
+            background: '#eef0f5',
+            boxShadow: '2px 2px 5px rgba(174,180,200,0.45), -2px -2px 5px rgba(255,255,255,0.85)',
+            border: '1px solid rgba(255,255,255,0.7)',
+          }}
         >
-          <Plus className="w-3 h-3 mr-1" />
+          <Plus className="h-3 w-3" />
           Add Note
         </button>
       </div>
 
-      {/* Add note form */}
+      {/* Add Note Form */}
       {showAddForm && (
-        <form onSubmit={handleAddNote} className="space-y-2">
+        <form onSubmit={handleAddNote} className="space-y-2 animate-fadeIn">
           <textarea
             value={newNoteContent}
-            onChange={(e) => setNewNoteContent(e.target.value)}
+            onChange={e => setNewNoteContent(e.target.value)}
             placeholder="Write a note..."
             rows={3}
-            className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+            style={neoInset}
             autoFocus
           />
-          <div className="flex items-center justify-end space-x-2">
+          <div className="flex justify-end gap-2">
             <button
               type="button"
-              onClick={() => {
-                setShowAddForm(false);
-                setNewNoteContent('');
-              }}
-              className="px-3 py-1 text-xs text-gray-600 hover:text-gray-800"
+              onClick={() => { setShowAddForm(false); setNewNoteContent(''); }}
+              className="px-3 py-1.5 text-xs font-bold text-slate-500 rounded-xl"
+              style={{ background: '#eef0f5', boxShadow: '2px 2px 5px rgba(174,180,200,0.4), -2px -2px 5px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.7)' }}
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading || !newNoteContent.trim()}
-              className="px-3 py-1 bg-primary-600 text-white text-xs rounded hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-3 py-1.5 text-xs font-bold text-white rounded-xl"
+              style={{
+                background: loading || !newNoteContent.trim() ? '#9ba5bc' : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                boxShadow: loading || !newNoteContent.trim() ? 'none' : '2px 2px 6px rgba(99,102,241,0.35)',
+              }}
             >
               {loading ? 'Adding...' : 'Add Note'}
             </button>
@@ -101,62 +107,68 @@ const NotesList = ({ todoId, notes }) => {
         </form>
       )}
 
-      {/* Notes list */}
+      {/* Notes List */}
       {notes.length === 0 ? (
-        <p className="text-sm text-gray-500 italic">No notes yet</p>
+        <p className="text-xs text-slate-400 font-medium italic pl-1">No notes yet — add one above!</p>
       ) : (
         <div className="space-y-2">
-          {notes.map((note) => (
-            <div key={note._id} className="bg-gray-50 rounded-md p-3">
+          {notes.map(note => (
+            <div
+              key={note._id}
+              className="p-3 rounded-2xl"
+              style={{
+                background: '#eef0f5',
+                boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.4), inset -3px -3px 7px rgba(255,255,255,0.7)',
+                border: '1px solid rgba(255,255,255,0.5)',
+              }}
+            >
               {editingNote === note._id ? (
                 <div className="space-y-2">
                   <textarea
                     value={editNoteContent}
-                    onChange={(e) => setEditNoteContent(e.target.value)}
+                    onChange={e => setEditNoteContent(e.target.value)}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
+                    style={neoInset}
                     autoFocus
                   />
-                  <div className="flex items-center justify-end space-x-2">
-                    <button
-                      type="button"
-                      onClick={cancelEditing}
-                      className="px-3 py-1 text-xs text-gray-600 hover:text-gray-800"
-                    >
+                  <div className="flex justify-end gap-2">
+                    <button type="button" onClick={cancelEditing}
+                      className="px-3 py-1.5 text-xs font-bold text-slate-500 rounded-xl"
+                      style={{ background: '#eef0f5', boxShadow: '2px 2px 5px rgba(174,180,200,0.4), -2px -2px 5px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.7)' }}>
                       Cancel
                     </button>
-                    <button
-                      onClick={() => handleEditNote(note._id)}
+                    <button onClick={() => handleEditNote(note._id)}
                       disabled={loading || !editNoteContent.trim()}
-                      className="px-3 py-1 bg-primary-600 text-white text-xs rounded hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
+                      className="px-3 py-1.5 text-xs font-bold text-white rounded-xl"
+                      style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '2px 2px 6px rgba(99,102,241,0.35)' }}>
                       {loading ? 'Saving...' : 'Save'}
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <p className="text-sm text-gray-700 whitespace-pre-wrap">{note.content}</p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      {format(new Date(note.createdAt), 'MMM d, yyyy \'at\' h:mm a')}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium text-slate-700 whitespace-pre-wrap leading-relaxed">{note.content}</p>
+                    <p className="text-[10px] text-slate-400 font-medium mt-1.5">
+                      {format(new Date(note.createdAt), "MMM d, yyyy 'at' h:mm a")}
                     </p>
                   </div>
-                  <div className="flex items-center space-x-1 ml-2">
-                    <button
-                      onClick={() => startEditing(note)}
-                      className="p-1 text-gray-400 hover:text-blue-600 focus:outline-none"
-                      title="Edit note"
-                    >
-                      <Edit className="w-3 h-3" />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteNote(note._id)}
-                      className="p-1 text-gray-400 hover:text-red-600 focus:outline-none"
-                      title="Delete note"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
+                  <div className="flex items-center gap-1 flex-shrink-0">
+                    {[
+                      { onClick: () => startEditing(note), Icon: Edit, hoverColor: '#6366f1' },
+                      { onClick: () => handleDeleteNote(note._id), Icon: Trash2, hoverColor: '#f43f5e' },
+                    ].map(({ onClick, Icon, hoverColor }) => (
+                      <button
+                        key={hoverColor}
+                        onClick={onClick}
+                        className="h-6 w-6 rounded-lg flex items-center justify-center text-slate-400 transition-all"
+                        style={{ background: '#eef0f5', boxShadow: '1px 1px 3px rgba(174,180,200,0.4), -1px -1px 3px rgba(255,255,255,0.85)' }}
+                        onMouseEnter={e => { e.currentTarget.style.background = hoverColor; e.currentTarget.querySelector('svg').style.color = 'white'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = '#eef0f5'; e.currentTarget.querySelector('svg').style.color = ''; }}
+                      >
+                        <Icon className="h-3 w-3" />
+                      </button>
+                    ))}
                   </div>
                 </div>
               )}

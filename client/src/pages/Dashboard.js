@@ -1,162 +1,154 @@
 import React, { useState } from 'react';
-import { 
-  Plus, 
-  Filter, 
-  Search, 
-  Kanban, 
-  List, 
-  CheckCircle2, 
-  Clock, 
-  AlertCircle,
-  Sparkles,
-  Layers
-} from 'lucide-react';
+import { Plus, Filter, Search, Kanban, List, CheckCircle2, Clock, AlertCircle, Sparkles, Layers } from 'lucide-react';
 import { useTodos } from '../contexts/TodoContext';
 import TodoForm from '../components/TodoForm';
 import TodoItem from '../components/TodoItem';
 
+const neo = {
+  card: {
+    background: '#eef0f5',
+    boxShadow: '8px 8px 20px rgba(174,180,200,0.6), -8px -8px 20px rgba(255,255,255,0.85)',
+    border: '1px solid rgba(255,255,255,0.8)',
+    borderRadius: '22px',
+  },
+  inset: {
+    background: '#e4e6ef',
+    boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)',
+    borderRadius: '12px',
+    border: '1px solid rgba(255,255,255,0.4)',
+  },
+};
+
 const Dashboard = () => {
   const { todos, loading } = useTodos();
   const [showForm, setShowForm] = useState(false);
-  const [filter, setFilter] = useState('all'); // all, active, completed, high, medium, low
+  const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
-  const [viewMode, setViewMode] = useState('list'); // 'list' or 'kanban'
+  const [viewMode, setViewMode] = useState('list');
 
   const filteredTodos = todos.filter(todo => {
-    const matchesSearch = 
+    const matchesSearch =
       todo.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       todo.description?.toLowerCase().includes(searchTerm.toLowerCase());
-    
     if (filter === 'active') return !todo.completed && matchesSearch;
     if (filter === 'completed') return todo.completed && matchesSearch;
     if (['high', 'medium', 'low'].includes(filter)) return todo.priority === filter && matchesSearch;
     return matchesSearch;
   });
 
-  const todoStats = {
+  const stats = {
     total: todos.length,
-    completed: todos.filter(todo => todo.completed).length,
-    pending: todos.filter(todo => !todo.completed).length,
-    high: todos.filter(todo => todo.priority === 'high' && !todo.completed).length
+    pending: todos.filter(t => !t.completed).length,
+    high: todos.filter(t => t.priority === 'high' && !t.completed).length,
+    completed: todos.filter(t => t.completed).length,
   };
 
   const kanbanColumns = [
-    { id: 'todo', title: 'To Do', items: filteredTodos.filter(t => !t.completed && t.priority !== 'high'), color: 'border-blue-400' },
-    { id: 'urgent', title: 'Urgent / High Priority', items: filteredTodos.filter(t => !t.completed && t.priority === 'high'), color: 'border-rose-400' },
-    { id: 'completed', title: 'Completed', items: filteredTodos.filter(t => t.completed), color: 'border-emerald-400' }
+    { id: 'todo',      title: 'To Do',              items: filteredTodos.filter(t => !t.completed && t.priority !== 'high'), accent: '#6366f1' },
+    { id: 'urgent',    title: 'Urgent / High',       items: filteredTodos.filter(t => !t.completed && t.priority === 'high'), accent: '#f43f5e' },
+    { id: 'completed', title: 'Completed',           items: filteredTodos.filter(t => t.completed), accent: '#10b981' },
+  ];
+
+  const statCards = [
+    { label: 'Total Tasks', value: stats.total,     icon: Layers,       c1: '#6366f1', c2: '#8b5cf6' },
+    { label: 'In Progress', value: stats.pending,   icon: Clock,        c1: '#f59e0b', c2: '#d97706' },
+    { label: 'Urgent',      value: stats.high,      icon: AlertCircle,  c1: '#f43f5e', c2: '#e11d48' },
+    { label: 'Completed',   value: stats.completed, icon: CheckCircle2, c1: '#10b981', c2: '#059669' },
   ];
 
   return (
-    <div className="space-y-8 animate-fadeIn">
-      {/* Header Banner */}
+    <div className="space-y-6 animate-fadeIn">
+
+      {/* ── HEADER ── */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-            <span>Tasks & Notes Workspace</span>
-          </h1>
-          <p className="text-sm text-slate-500 mt-1">
-            Organize tasks, attach structured notes, and manage daily execution.
-          </p>
+          <h1 className="text-2xl font-black text-slate-800 tracking-tight">Tasks & Notes Workspace</h1>
+          <p className="text-sm text-slate-500 mt-1 font-medium">Organize tasks, attach notes, and manage daily execution.</p>
         </div>
 
         <div className="flex items-center gap-3">
           {/* View Toggle */}
-          <div className="flex items-center p-1 bg-slate-100 rounded-2xl border border-slate-200/60 text-xs font-semibold">
-            <button
-              onClick={() => setViewMode('list')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl transition-all ${
-                viewMode === 'list' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-900'
-              }`}
-            >
-              <List className="h-4 w-4" />
-              <span>List</span>
-            </button>
-            <button
-              onClick={() => setViewMode('kanban')}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl transition-all ${
-                viewMode === 'kanban' ? 'bg-white text-slate-900 shadow-sm font-bold' : 'text-slate-500 hover:text-slate-900'
-              }`}
-            >
-              <Kanban className="h-4 w-4" />
-              <span>Kanban</span>
-            </button>
+          <div
+            className="flex p-1.5 gap-1"
+            style={{ ...neo.card, borderRadius: '16px', padding: '6px' }}
+          >
+            {[
+              { mode: 'list',   Icon: List,   label: 'List' },
+              { mode: 'kanban', Icon: Kanban, label: 'Kanban' },
+            ].map(({ mode, Icon, label }) => (
+              <button
+                key={mode}
+                onClick={() => setViewMode(mode)}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all"
+                style={viewMode === mode ? {
+                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  color: 'white',
+                  boxShadow: '3px 3px 8px rgba(99,102,241,0.4)',
+                } : {
+                  background: '#eef0f5',
+                  color: '#6b7280',
+                  boxShadow: 'inset 2px 2px 4px rgba(174,180,200,0.4), inset -2px -2px 4px rgba(255,255,255,0.8)',
+                }}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                <span>{label}</span>
+              </button>
+            ))}
           </div>
 
           <button
             onClick={() => setShowForm(true)}
-            className="inline-flex items-center px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/20 transition-all active:scale-95"
+            className="inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-bold text-white gap-1.5"
+            style={{
+              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+              boxShadow: '4px 4px 12px rgba(99,102,241,0.4), -2px -2px 8px rgba(255,255,255,0.5)',
+            }}
           >
-            <Plus className="h-4 w-4 mr-1.5" />
+            <Plus className="h-4 w-4" />
             Add Task
           </button>
         </div>
       </div>
 
-      {/* 4 Stat Overview Badges */}
+      {/* ── STAT CARDS ── */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div className="bg-white/80 backdrop-blur-xl p-5 rounded-3xl border border-white/60 shadow-lg shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex items-center space-x-4">
-          <div className="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold shadow-sm">
-            <Layers className="h-6 w-6" />
+        {statCards.map(({ label, value, icon: Icon, c1, c2 }) => (
+          <div key={label} style={neo.card} className="p-5 flex items-center gap-4 hover:-translate-y-0.5 transition-transform duration-200">
+            <div
+              className="h-11 w-11 rounded-2xl flex items-center justify-center text-white flex-shrink-0"
+              style={{ background: `linear-gradient(135deg, ${c1}, ${c2})`, boxShadow: `4px 4px 10px ${c1}40` }}
+            >
+              <Icon className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="text-2xl font-black text-slate-800 font-mono-display">{value}</div>
+              <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mt-0.5">{label}</div>
+            </div>
           </div>
-          <div>
-            <div className="text-2xl font-black text-slate-900 font-mono">{todoStats.total}</div>
-            <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5">Total Tasks</div>
-          </div>
-        </div>
-
-        <div className="bg-white/80 backdrop-blur-xl p-5 rounded-3xl border border-white/60 shadow-lg shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex items-center space-x-4">
-          <div className="h-12 w-12 rounded-2xl bg-amber-50 text-amber-500 flex items-center justify-center font-bold shadow-sm">
-            <Clock className="h-6 w-6" />
-          </div>
-          <div>
-            <div className="text-2xl font-black text-slate-900 font-mono">{todoStats.pending}</div>
-            <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5">In Progress</div>
-          </div>
-        </div>
-
-        <div className="bg-white/80 backdrop-blur-xl p-5 rounded-3xl border border-white/60 shadow-lg shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex items-center space-x-4">
-          <div className="h-12 w-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center font-bold shadow-sm">
-            <AlertCircle className="h-6 w-6" />
-          </div>
-          <div>
-            <div className="text-2xl font-black text-slate-900 font-mono">{todoStats.high}</div>
-            <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5">Urgent</div>
-          </div>
-        </div>
-
-        <div className="bg-white/80 backdrop-blur-xl p-5 rounded-3xl border border-white/60 shadow-lg shadow-slate-200/40 hover:-translate-y-1 transition-all duration-300 flex items-center space-x-4">
-          <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-500 flex items-center justify-center font-bold shadow-sm">
-            <CheckCircle2 className="h-6 w-6" />
-          </div>
-          <div>
-            <div className="text-2xl font-black text-slate-900 font-mono">{todoStats.completed}</div>
-            <div className="text-xs text-slate-500 font-bold uppercase tracking-wider mt-0.5">Completed</div>
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
-        
-        {/* Search */}
+      {/* ── SEARCH & FILTER ── */}
+      <div style={neo.card} className="flex flex-col sm:flex-row gap-4 p-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Search tasks, descriptions, notes..."
-            className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+            placeholder="Search tasks, descriptions..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={e => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2.5 text-sm font-medium"
+            style={neo.inset}
           />
         </div>
 
-        {/* Filters */}
-        <div className="flex items-center space-x-2">
-          <Filter className="h-4 w-4 text-slate-400" />
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-slate-400 flex-shrink-0" />
           <select
             value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="text-xs font-semibold px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 text-slate-700"
+            onChange={e => setFilter(e.target.value)}
+            className="text-sm font-bold px-3 py-2.5"
+            style={{ ...neo.inset, cursor: 'pointer', appearance: 'none', minWidth: '140px' }}
           >
             <option value="all">All Tasks</option>
             <option value="active">Active Only</option>
@@ -168,83 +160,79 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Loading state */}
+      {/* ── CONTENT ── */}
       {loading ? (
         <div className="flex justify-center py-16">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+          <div className="h-10 w-10 rounded-full border-4 border-transparent animate-spin"
+            style={{ borderTopColor: '#6366f1', boxShadow: '3px 3px 8px rgba(99,102,241,0.3)' }} />
         </div>
+
       ) : viewMode === 'kanban' ? (
-        
-        /* Kanban View */
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-          {kanbanColumns.map((col) => (
-            <div key={col.id} className="bg-slate-100/70 rounded-3xl p-4 border border-slate-200/80 space-y-3 min-h-[400px]">
-              <div className="flex items-center justify-between px-2 py-1">
-                <div className="flex items-center space-x-2">
-                  <span className={`w-2.5 h-2.5 rounded-full border-2 ${col.color} bg-white`} />
-                  <h3 className="font-bold text-sm text-slate-800">{col.title}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          {kanbanColumns.map(col => (
+            <div key={col.id} style={{ ...neo.card, padding: '1.25rem' }}>
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className="h-3 w-3 rounded-full" style={{ background: col.accent, boxShadow: `0 0 6px ${col.accent}80` }} />
+                  <h3 className="text-sm font-bold text-slate-700">{col.title}</h3>
                 </div>
-                <span className="px-2 py-0.5 rounded-full bg-white text-xs font-bold text-slate-600 shadow-sm">
+                <span
+                  className="text-xs font-black px-2.5 py-1 rounded-xl"
+                  style={{
+                    background: '#eef0f5',
+                    color: col.accent,
+                    boxShadow: '2px 2px 5px rgba(174,180,200,0.45), -2px -2px 5px rgba(255,255,255,0.85)',
+                  }}
+                >
                   {col.items.length}
                 </span>
               </div>
-
-              <div className="space-y-3">
-                {col.items.length === 0 ? (
-                  <div className="text-center py-10 text-xs text-slate-400">
-                    No tasks in this lane.
-                  </div>
-                ) : (
-                  col.items.map(todo => (
-                    <TodoItem key={todo._id} todo={todo} />
-                  ))
-                )}
+              <div className="space-y-3 min-h-[200px]">
+                {col.items.length === 0
+                  ? <div className="text-center text-xs text-slate-400 font-medium py-8">No tasks here.</div>
+                  : col.items.map(t => <TodoItem key={t._id} todo={t} />)
+                }
               </div>
             </div>
           ))}
         </div>
 
       ) : (
-        
-        /* List View */
         <div className="space-y-3">
           {filteredTodos.length === 0 ? (
-            <div className="text-center py-16 bg-white rounded-3xl border border-slate-200/80 p-8">
-              <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600">
-                <Sparkles className="h-6 w-6" />
+            <div style={neo.card} className="text-center py-16 p-8">
+              <div
+                className="h-14 w-14 mx-auto rounded-3xl flex items-center justify-center mb-4"
+                style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '6px 6px 16px rgba(99,102,241,0.3)' }}
+              >
+                <Sparkles className="h-7 w-7 text-white" />
               </div>
-              <h3 className="mt-4 text-base font-bold text-slate-900">
+              <h3 className="text-base font-bold text-slate-700">
                 {searchTerm || filter !== 'all' ? 'No tasks found' : 'Workspace is clear!'}
               </h3>
-              <p className="mt-1 text-xs text-slate-500 max-w-sm mx-auto">
-                {searchTerm || filter !== 'all' 
-                  ? 'Try modifying your search or priority filter.'
-                  : 'Start by creating your first task to track progress.'}
+              <p className="text-sm text-slate-400 mt-1 font-medium max-w-xs mx-auto">
+                {searchTerm || filter !== 'all'
+                  ? 'Try modifying your search or filter.'
+                  : 'Start by creating your first task to track your progress.'}
               </p>
               {!searchTerm && filter === 'all' && (
-                <div className="mt-5">
-                  <button
-                    onClick={() => setShowForm(true)}
-                    className="inline-flex items-center px-4 py-2 text-xs font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm"
-                  >
-                    <Plus className="h-4 w-4 mr-1.5" />
-                    Create Task
-                  </button>
-                </div>
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-bold text-white"
+                  style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '4px 4px 12px rgba(99,102,241,0.35)' }}
+                >
+                  <Plus className="h-4 w-4" />
+                  Create Task
+                </button>
               )}
             </div>
           ) : (
-            filteredTodos.map((todo) => (
-              <TodoItem key={todo._id} todo={todo} />
-            ))
+            filteredTodos.map(todo => <TodoItem key={todo._id} todo={todo} />)
           )}
         </div>
       )}
 
-      {/* Todo Form Modal */}
-      {showForm && (
-        <TodoForm onClose={() => setShowForm(false)} />
-      )}
+      {showForm && <TodoForm onClose={() => setShowForm(false)} />}
     </div>
   );
 };
