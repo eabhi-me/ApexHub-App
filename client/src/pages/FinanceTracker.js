@@ -8,10 +8,10 @@ import { useFinance, CATEGORIES } from '../contexts/FinanceContext';
 
 /* ── style helpers ── */
 const neo = {
-  card: { background: '#eef0f5', boxShadow: '8px 8px 20px rgba(174,200,200,0.6), -8px -8px 20px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.8)', borderRadius: '22px' },
-  cardSm: { background: '#eef0f5', boxShadow: '5px 5px 12px rgba(174,180,200,0.55), -5px -5px 12px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.75)', borderRadius: '16px' },
-  inset: { background: '#e4e6ef', boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.4)' },
-  progress: { background: '#e4e6ef', boxShadow: 'inset 2px 2px 5px rgba(174,180,200,0.55), inset -2px -2px 5px rgba(255,255,255,0.85)', borderRadius: '999px', overflow: 'hidden', height: '8px' },
+  card: { background: '#ffffff', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.8)', borderRadius: '22px' },
+  cardSm: { background: '#ffffff', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.75)', borderRadius: '16px' },
+  inset: { background: '#f8fafc', boxShadow: 'none', borderRadius: '12px', border: '1px solid #cbd5e1' },
+  progress: { background: '#f8fafc', boxShadow: 'none', borderRadius: '999px', overflow: 'hidden', height: '8px' },
 };
 
 const NeoInput = ({ style, ...props }) => (
@@ -53,8 +53,8 @@ const NeoSelect = ({ style, ...props }) => (
 const Modal = ({ title, onClose, children }) => (
   <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
     style={{ background: 'rgba(15,18,35,0.55)', backdropFilter: 'blur(6px)' }}>
-    <div className="w-full max-w-md p-7 animate-scaleIn"
-      style={{ ...neo.card, borderRadius: '28px', boxShadow: '20px 20px 50px rgba(174,180,200,0.65), -10px -10px 30px rgba(255,255,255,0.9)' }}>
+    <div className="w-full max-w-md p-7 animate-scaleIn max-h-[85vh] overflow-y-auto custom-scrollbar"
+      style={{ ...neo.card, borderRadius: '28px', boxShadow: 'none' }}>
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-black text-slate-800">{title}</h3>
         <button onClick={onClose}
@@ -72,7 +72,7 @@ const GradBtn = ({ children, color1 = '#10b981', color2 = '#059669', className =
   <button
     {...props}
     className={`font-bold text-white rounded-2xl flex items-center justify-center gap-2 transition-transform active:scale-95 ${className}`}
-    style={{ background: `linear-gradient(135deg, ${color1}, ${color2})`, boxShadow: `4px 4px 12px ${color1}40`, ...(props.disabled ? { opacity: 0.6, cursor: 'not-allowed' } : {}) }}
+    style={{ background: `linear-gradient(135deg, ${color1}, ${color2})`, boxShadow: 'none', ...(props.disabled ? { opacity: 0.6, cursor: 'not-allowed' } : {}) }}
   >
     {children}
   </button>
@@ -177,7 +177,7 @@ const FinanceTracker = () => {
             <div className="flex items-center justify-between mb-3">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{lbl}</span>
               <div className="h-9 w-9 rounded-xl flex items-center justify-center text-white"
-                style={{ background: `linear-gradient(135deg, ${c1}, ${c2})`, boxShadow: `3px 3px 8px ${c1}40` }}>
+                style={{ background: `linear-gradient(135deg, ${c1}, ${c2})`, boxShadow: 'none' }}>
                 <Icon className="h-4.5 w-4.5" style={{ height: '1.1rem', width: '1.1rem' }} />
               </div>
             </div>
@@ -196,11 +196,11 @@ const FinanceTracker = () => {
           {/* Filter Bar */}
           <div style={neo.card} className="p-4 flex flex-col sm:flex-row gap-3">
             {/* Type tabs */}
-            <div className="flex p-1 gap-1 rounded-xl" style={{ background: '#e4e6ef', boxShadow: 'inset 2px 2px 5px rgba(174,180,200,0.4), inset -2px -2px 5px rgba(255,255,255,0.8)' }}>
+            <div className="flex p-1 gap-1 rounded-xl" style={{ background: '#f8fafc', boxShadow: 'none' }}>
               {['all', 'expense', 'income'].map(tab => (
                 <button key={tab} onClick={() => setActiveTab(tab)}
                   className="px-3.5 py-1.5 rounded-lg text-xs font-bold capitalize transition-all"
-                  style={activeTab === tab ? { background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', color: 'white', boxShadow: '2px 2px 6px rgba(99,102,241,0.35)' } : { color: '#6b7280' }}>
+                  style={activeTab === tab ? { background: '#6366f1', color: 'white', boxShadow: 'none' } : { color: '#6b7280' }}>
                   {tab}
                 </button>
               ))}
@@ -259,7 +259,7 @@ const FinanceTracker = () => {
                     </span>
                     <button onClick={() => deleteTransaction(t._id)}
                       className="h-7 w-7 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-all"
-                      style={{ background: '#eef0f5', boxShadow: '2px 2px 5px rgba(174,180,200,0.4), -2px -2px 5px rgba(255,255,255,0.85)' }}
+                      style={{ background: '#ffffff', boxShadow: 'none' }}
                       onMouseEnter={e => { e.currentTarget.style.background = '#f43f5e'; }}
                       onMouseLeave={e => { e.currentTarget.style.background = '#eef0f5'; }}>
                       <Trash2 className="h-3.5 w-3.5" />
@@ -306,7 +306,7 @@ const FinanceTracker = () => {
                         <div style={{
                           height: '100%', borderRadius: '999px',
                           width: `${pct}%`,
-                          background: isOver ? 'linear-gradient(90deg, #f43f5e, #e11d48)' : pct > 75 ? 'linear-gradient(90deg, #f59e0b, #d97706)' : 'linear-gradient(90deg, #10b981, #059669)',
+                          background: isOver ? '#f43f5e' : pct > 75 ? '#f59e0b' : '#10b981',
                           transition: 'width 0.5s ease',
                         }} />
                       </div>
@@ -341,7 +341,7 @@ const FinanceTracker = () => {
                     <div className="flex items-start justify-between gap-2 mb-3">
                       <div className="flex items-center gap-2.5">
                         <div className="h-8 w-8 rounded-xl flex-shrink-0"
-                          style={{ background: `linear-gradient(135deg, ${goal.color || '#6366f1'}, ${goal.color || '#6366f1'}aa)`, boxShadow: `3px 3px 8px ${goal.color || '#6366f1'}35` }}>
+                          style={{ background: `linear-gradient(135deg, ${goal.color || '#6366f1'}, ${goal.color || '#6366f1'}aa)`, boxShadow: 'none' }}>
                           <PiggyBank className="h-full w-full p-1.5 text-white" />
                         </div>
                         <div>
@@ -352,7 +352,7 @@ const FinanceTracker = () => {
                       <div className="flex gap-1">
                         <button onClick={() => setShowDepositModal(goal)}
                           className="text-[10px] font-black px-2.5 py-1.5 rounded-xl text-white"
-                          style={{ background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '2px 2px 5px rgba(16,185,129,0.35)' }}>
+                          style={{ background: '#10b981', boxShadow: 'none' }}>
                           +₹
                         </button>
                         <button onClick={() => deleteGoal(goal._id)}
@@ -390,8 +390,8 @@ const FinanceTracker = () => {
                   <button key={t} type="button" onClick={() => setTxForm(p => ({ ...p, type: t }))}
                     className="flex-1 py-2.5 rounded-2xl text-sm font-bold capitalize transition-all"
                     style={txForm.type === t ? {
-                      background: t === 'income' ? 'linear-gradient(135deg, #10b981, #059669)' : 'linear-gradient(135deg, #f43f5e, #e11d48)',
-                      color: 'white', boxShadow: `3px 3px 8px ${t === 'income' ? 'rgba(16,185,129,0.4)' : 'rgba(244,63,94,0.4)'}`,
+                      background: t === 'income' ? '#10b981' : '#f43f5e',
+                      color: 'white', boxShadow: 'none',
                     } : { ...neo.cardSm, color: '#6b7280' }}>
                     {t === 'income' ? '+ Income' : '- Expense'}
                   </button>

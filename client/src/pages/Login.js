@@ -40,22 +40,22 @@ const Login = () => {
   };
 
   const neoCard = {
-    background: '#eef0f5',
-    boxShadow: '10px 10px 30px rgba(174,180,200,0.6), -10px -10px 30px rgba(255,255,255,0.85)',
+    background: '#ffffff',
+    boxShadow: 'none',
     borderRadius: '24px',
     border: '1px solid rgba(255,255,255,0.8)',
   };
 
   const neoInset = {
     background: '#e8eaf2',
-    boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)',
+    boxShadow: 'none',
     borderRadius: '12px',
     border: '1px solid rgba(255,255,255,0.5)',
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #e8eaf2 0%, #eef0f5 50%, #e6e8f0 100%)' }}>
+      style={{ background: '#e8eaf2' }}>
       
       {/* Ambient glows */}
       <div className="absolute top-0 left-0 w-80 h-80 rounded-full pointer-events-none"
@@ -70,8 +70,8 @@ const Login = () => {
           <div
             className="inline-flex h-16 w-16 rounded-2xl items-center justify-center mx-auto"
             style={{
-              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-              boxShadow: '6px 6px 16px rgba(99,102,241,0.4), -4px -4px 12px rgba(255,255,255,0.6)',
+              background: '#6366f1',
+              boxShadow: 'none',
             }}
           >
             <Sparkles className="h-8 w-8 text-white" />
@@ -92,7 +92,7 @@ const Login = () => {
             <button
               onClick={handleAutofillDemo}
               className="text-xs font-bold text-indigo-600 px-3 py-1.5 rounded-xl flex items-center gap-1"
-              style={{ background: '#eef0f5', boxShadow: '2px 2px 6px rgba(174,180,200,0.5), -2px -2px 6px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.7)' }}
+              style={{ background: '#ffffff', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.7)' }}
             >
               <Copy className="h-3 w-3" /> Auto-fill
             </button>
@@ -147,7 +147,7 @@ const Login = () => {
               type="submit" disabled={loading}
               className="w-full py-3.5 rounded-2xl text-sm font-bold text-white flex items-center justify-center gap-2"
               style={{
-                background: loading ? '#9ba5bc' : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                background: loading ? '#9ba5bc' : '#6366f1',
                 boxShadow: loading ? 'none' : '4px 4px 12px rgba(99,102,241,0.4), -2px -2px 8px rgba(255,255,255,0.5)',
                 cursor: loading ? 'not-allowed' : 'pointer',
               }}
@@ -170,8 +170,8 @@ const Login = () => {
             type="button" onClick={handleDemoLogin}
             className="w-full py-3 rounded-2xl text-sm font-bold text-indigo-700 flex items-center justify-center gap-2"
             style={{
-              background: '#eef0f5',
-              boxShadow: '4px 4px 10px rgba(174,180,200,0.5), -4px -4px 10px rgba(255,255,255,0.85)',
+              background: '#ffffff',
+              boxShadow: 'none',
               border: '1px solid rgba(255,255,255,0.7)',
             }}
           >
@@ -196,7 +196,7 @@ const Login = () => {
             { icon: Bot,         label: 'Apex AI',      color: '#f59e0b' },
           ].map(({ icon: Icon, label, color }) => (
             <div key={label} className="flex flex-col items-center gap-1.5 p-2.5 rounded-2xl text-center"
-              style={{ background: '#eef0f5', boxShadow: '3px 3px 8px rgba(174,180,200,0.5), -3px -3px 8px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.7)' }}>
+              style={{ background: '#ffffff', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.7)' }}>
               <Icon className="h-4 w-4" style={{ color }} />
               <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wide">{label}</span>
             </div>

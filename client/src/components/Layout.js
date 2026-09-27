@@ -25,7 +25,7 @@ const Layout = ({ children }) => {
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden" style={{ background: '#eef0f5' }}>
+    <div className="flex h-screen overflow-hidden" style={{ background: '#ffffff' }}>
       
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
@@ -50,8 +50,8 @@ const Layout = ({ children }) => {
           marginRight: '0',
           height: 'calc(100vh - 2.5rem)',
           borderRadius: '24px',
-          background: '#eef0f5',
-          boxShadow: '10px 10px 30px rgba(174, 180, 200, 0.6), -10px -10px 30px rgba(255, 255, 255, 0.85)',
+          background: '#ffffff',
+          boxShadow: 'none',
           border: '1px solid rgba(255, 255, 255, 0.8)',
         }}
       >
@@ -60,8 +60,8 @@ const Layout = ({ children }) => {
           <div
             className="flex items-center justify-center h-11 w-11 rounded-2xl"
             style={{
-              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-              boxShadow: '4px 4px 12px rgba(99, 102, 241, 0.4), -2px -2px 8px rgba(255,255,255,0.6)',
+              background: '#6366f1',
+              boxShadow: 'none',
             }}
           >
             <Sparkles className="h-5 w-5 text-white" />
@@ -76,7 +76,7 @@ const Layout = ({ children }) => {
           </div>
           <button
             className="lg:hidden p-2 rounded-xl text-slate-500 hover:text-slate-700"
-            style={{ boxShadow: '3px 3px 8px rgba(174,180,200,0.5), -3px -3px 8px rgba(255,255,255,0.85)' }}
+            style={{ boxShadow: 'none' }}
             onClick={() => setIsMobileMenuOpen(false)}
           >
             <X className="h-4 w-4" />
@@ -98,11 +98,11 @@ const Layout = ({ children }) => {
                 <div
                   className="flex items-center justify-between px-4 py-3.5 rounded-2xl cursor-pointer group"
                   style={isActive ? {
-                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                    boxShadow: '4px 4px 12px rgba(99,102,241,0.35), -2px -2px 8px rgba(255,255,255,0.5)',
+                    background: '#6366f1',
+                    boxShadow: 'none',
                   } : {
-                    background: '#eef0f5',
-                    boxShadow: '3px 3px 8px rgba(174,180,200,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
+                    background: '#ffffff',
+                    boxShadow: 'none',
                     border: '1px solid rgba(255,255,255,0.7)',
                   }}
                 >
@@ -112,8 +112,8 @@ const Layout = ({ children }) => {
                       style={isActive ? {
                         background: 'rgba(255,255,255,0.2)',
                       } : {
-                        background: '#eef0f5',
-                        boxShadow: '2px 2px 6px rgba(174,180,200,0.5), -2px -2px 6px rgba(255,255,255,0.85)',
+                        background: '#ffffff',
+                        boxShadow: 'none',
                       }}
                     >
                       <Icon
@@ -137,7 +137,7 @@ const Layout = ({ children }) => {
                       } : {
                         background: '#e8eaf2',
                         color: '#6366f1',
-                        boxShadow: '2px 2px 4px rgba(174,180,200,0.4), -1px -1px 4px rgba(255,255,255,0.9)',
+                        boxShadow: 'none',
                       }}
                     >
                       {item.badge}
@@ -154,16 +154,16 @@ const Layout = ({ children }) => {
           <div
             className="rounded-2xl p-4"
             style={{
-              background: '#eef0f5',
-              boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)',
+              background: '#ffffff',
+              boxShadow: 'none',
             }}
           >
             <div className="flex items-center gap-3 mb-3">
               <div
                 className="h-10 w-10 rounded-full flex items-center justify-center text-indigo-600 font-black text-lg"
                 style={{
-                  background: '#eef0f5',
-                  boxShadow: '3px 3px 8px rgba(174,180,200,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
+                  background: '#ffffff',
+                  boxShadow: 'none',
                   border: '2px solid rgba(255,255,255,0.8)',
                 }}
               >
@@ -178,8 +178,8 @@ const Layout = ({ children }) => {
               onClick={logout}
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold text-slate-500 hover:text-rose-600"
               style={{
-                background: '#eef0f5',
-                boxShadow: '3px 3px 7px rgba(174,180,200,0.5), -3px -3px 7px rgba(255,255,255,0.85)',
+                background: '#ffffff',
+                boxShadow: 'none',
                 border: '1px solid rgba(255,255,255,0.7)',
               }}
               onMouseEnter={e => { e.currentTarget.style.boxShadow = 'inset 2px 2px 5px rgba(174,180,200,0.4), inset -2px -2px 5px rgba(255,255,255,0.8)'; }}
@@ -199,8 +199,8 @@ const Layout = ({ children }) => {
           className="lg:hidden flex items-center justify-between px-5 py-4 mx-5 mt-5"
           style={{
             borderRadius: '20px',
-            background: '#eef0f5',
-            boxShadow: '6px 6px 16px rgba(174,180,200,0.6), -6px -6px 16px rgba(255,255,255,0.85)',
+            background: '#ffffff',
+            boxShadow: 'none',
             border: '1px solid rgba(255,255,255,0.7)',
           }}
         >
@@ -212,8 +212,8 @@ const Layout = ({ children }) => {
             onClick={() => setIsMobileMenuOpen(true)}
             className="p-2 rounded-xl text-slate-500"
             style={{
-              background: '#eef0f5',
-              boxShadow: '3px 3px 8px rgba(174,180,200,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
+              background: '#ffffff',
+              boxShadow: 'none',
             }}
           >
             <Menu className="h-5 w-5" />

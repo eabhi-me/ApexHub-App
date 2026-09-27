@@ -4,10 +4,10 @@ import { format } from 'date-fns';
 import { useTodos } from '../contexts/TodoContext';
 
 const neoInset = {
-  background: '#e4e6ef',
-  boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)',
+  background: '#f8fafc',
+  boxShadow: 'none',
   borderRadius: '12px',
-  border: '1px solid rgba(255,255,255,0.4)',
+  border: '1px solid #cbd5e1',
   width: '100%',
   padding: '0.5rem 0.75rem',
   fontSize: '0.8rem',
@@ -62,8 +62,8 @@ const NotesList = ({ todoId, notes }) => {
           onClick={() => setShowAddForm(!showAddForm)}
           className="flex items-center gap-1 text-xs font-bold text-indigo-600 hover:text-indigo-700 px-3 py-1.5 rounded-xl transition-colors"
           style={{
-            background: '#eef0f5',
-            boxShadow: '2px 2px 5px rgba(174,180,200,0.45), -2px -2px 5px rgba(255,255,255,0.85)',
+            background: '#ffffff',
+            boxShadow: 'none',
             border: '1px solid rgba(255,255,255,0.7)',
           }}
         >
@@ -88,7 +88,7 @@ const NotesList = ({ todoId, notes }) => {
               type="button"
               onClick={() => { setShowAddForm(false); setNewNoteContent(''); }}
               className="px-3 py-1.5 text-xs font-bold text-slate-500 rounded-xl"
-              style={{ background: '#eef0f5', boxShadow: '2px 2px 5px rgba(174,180,200,0.4), -2px -2px 5px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.7)' }}
+              style={{ background: '#ffffff', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.7)' }}
             >
               Cancel
             </button>
@@ -97,7 +97,7 @@ const NotesList = ({ todoId, notes }) => {
               disabled={loading || !newNoteContent.trim()}
               className="px-3 py-1.5 text-xs font-bold text-white rounded-xl"
               style={{
-                background: loading || !newNoteContent.trim() ? '#9ba5bc' : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                background: loading || !newNoteContent.trim() ? '#9ba5bc' : '#6366f1',
                 boxShadow: loading || !newNoteContent.trim() ? 'none' : '2px 2px 6px rgba(99,102,241,0.35)',
               }}
             >
@@ -117,8 +117,8 @@ const NotesList = ({ todoId, notes }) => {
               key={note._id}
               className="p-3 rounded-2xl"
               style={{
-                background: '#eef0f5',
-                boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.4), inset -3px -3px 7px rgba(255,255,255,0.7)',
+                background: '#ffffff',
+                boxShadow: 'none',
                 border: '1px solid rgba(255,255,255,0.5)',
               }}
             >
@@ -134,13 +134,13 @@ const NotesList = ({ todoId, notes }) => {
                   <div className="flex justify-end gap-2">
                     <button type="button" onClick={cancelEditing}
                       className="px-3 py-1.5 text-xs font-bold text-slate-500 rounded-xl"
-                      style={{ background: '#eef0f5', boxShadow: '2px 2px 5px rgba(174,180,200,0.4), -2px -2px 5px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.7)' }}>
+                      style={{ background: '#ffffff', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.7)' }}>
                       Cancel
                     </button>
                     <button onClick={() => handleEditNote(note._id)}
                       disabled={loading || !editNoteContent.trim()}
                       className="px-3 py-1.5 text-xs font-bold text-white rounded-xl"
-                      style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '2px 2px 6px rgba(99,102,241,0.35)' }}>
+                      style={{ background: '#6366f1', boxShadow: 'none' }}>
                       {loading ? 'Saving...' : 'Save'}
                     </button>
                   </div>
@@ -162,7 +162,7 @@ const NotesList = ({ todoId, notes }) => {
                         key={hoverColor}
                         onClick={onClick}
                         className="h-6 w-6 rounded-lg flex items-center justify-center text-slate-400 transition-all"
-                        style={{ background: '#eef0f5', boxShadow: '1px 1px 3px rgba(174,180,200,0.4), -1px -1px 3px rgba(255,255,255,0.85)' }}
+                        style={{ background: '#ffffff', boxShadow: 'none' }}
                         onMouseEnter={e => { e.currentTarget.style.background = hoverColor; e.currentTarget.querySelector('svg').style.color = 'white'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = '#eef0f5'; e.currentTarget.querySelector('svg').style.color = ''; }}
                       >

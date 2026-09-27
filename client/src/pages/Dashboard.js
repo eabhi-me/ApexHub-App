@@ -6,16 +6,16 @@ import TodoItem from '../components/TodoItem';
 
 const neo = {
   card: {
-    background: '#eef0f5',
-    boxShadow: '8px 8px 20px rgba(174,180,200,0.6), -8px -8px 20px rgba(255,255,255,0.85)',
+    background: '#ffffff',
+    boxShadow: 'none',
     border: '1px solid rgba(255,255,255,0.8)',
     borderRadius: '22px',
   },
   inset: {
-    background: '#e4e6ef',
-    boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)',
+    background: '#f8fafc',
+    boxShadow: 'none',
     borderRadius: '12px',
-    border: '1px solid rgba(255,255,255,0.4)',
+    border: '1px solid #cbd5e1',
   },
 };
 
@@ -66,7 +66,7 @@ const Dashboard = () => {
           <p className="text-sm text-slate-500 mt-1 font-medium">Organize tasks, attach notes, and manage daily execution.</p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           {/* View Toggle */}
           <div
             className="flex p-1.5 gap-1"
@@ -81,13 +81,13 @@ const Dashboard = () => {
                 onClick={() => setViewMode(mode)}
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all"
                 style={viewMode === mode ? {
-                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  background: '#6366f1',
                   color: 'white',
-                  boxShadow: '3px 3px 8px rgba(99,102,241,0.4)',
+                  boxShadow: 'none',
                 } : {
-                  background: '#eef0f5',
+                  background: '#ffffff',
                   color: '#6b7280',
-                  boxShadow: 'inset 2px 2px 4px rgba(174,180,200,0.4), inset -2px -2px 4px rgba(255,255,255,0.8)',
+                  boxShadow: 'none',
                 }}
               >
                 <Icon className="h-3.5 w-3.5" />
@@ -100,8 +100,8 @@ const Dashboard = () => {
             onClick={() => setShowForm(true)}
             className="inline-flex items-center px-4 py-2.5 rounded-2xl text-sm font-bold text-white gap-1.5"
             style={{
-              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-              boxShadow: '4px 4px 12px rgba(99,102,241,0.4), -2px -2px 8px rgba(255,255,255,0.5)',
+              background: '#6366f1',
+              boxShadow: 'none',
             }}
           >
             <Plus className="h-4 w-4" />
@@ -116,7 +116,7 @@ const Dashboard = () => {
           <div key={label} style={neo.card} className="p-5 flex items-center gap-4 hover:-translate-y-0.5 transition-transform duration-200">
             <div
               className="h-11 w-11 rounded-2xl flex items-center justify-center text-white flex-shrink-0"
-              style={{ background: `linear-gradient(135deg, ${c1}, ${c2})`, boxShadow: `4px 4px 10px ${c1}40` }}
+              style={{ background: `linear-gradient(135deg, ${c1}, ${c2})`, boxShadow: 'none' }}
             >
               <Icon className="h-5 w-5" />
             </div>
@@ -164,7 +164,7 @@ const Dashboard = () => {
       {loading ? (
         <div className="flex justify-center py-16">
           <div className="h-10 w-10 rounded-full border-4 border-transparent animate-spin"
-            style={{ borderTopColor: '#6366f1', boxShadow: '3px 3px 8px rgba(99,102,241,0.3)' }} />
+            style={{ borderTopColor: '#6366f1', boxShadow: 'none' }} />
         </div>
 
       ) : viewMode === 'kanban' ? (
@@ -173,15 +173,15 @@ const Dashboard = () => {
             <div key={col.id} style={{ ...neo.card, padding: '1.25rem' }}>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full" style={{ background: col.accent, boxShadow: `0 0 6px ${col.accent}80` }} />
+                  <div className="h-3 w-3 rounded-full" style={{ background: col.accent, boxShadow: 'none' }} />
                   <h3 className="text-sm font-bold text-slate-700">{col.title}</h3>
                 </div>
                 <span
                   className="text-xs font-black px-2.5 py-1 rounded-xl"
                   style={{
-                    background: '#eef0f5',
+                    background: '#ffffff',
                     color: col.accent,
-                    boxShadow: '2px 2px 5px rgba(174,180,200,0.45), -2px -2px 5px rgba(255,255,255,0.85)',
+                    boxShadow: 'none',
                   }}
                 >
                   {col.items.length}
@@ -203,7 +203,7 @@ const Dashboard = () => {
             <div style={neo.card} className="text-center py-16 p-8">
               <div
                 className="h-14 w-14 mx-auto rounded-3xl flex items-center justify-center mb-4"
-                style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '6px 6px 16px rgba(99,102,241,0.3)' }}
+                style={{ background: '#6366f1', boxShadow: 'none' }}
               >
                 <Sparkles className="h-7 w-7 text-white" />
               </div>
@@ -219,7 +219,7 @@ const Dashboard = () => {
                 <button
                   onClick={() => setShowForm(true)}
                   className="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-bold text-white"
-                  style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '4px 4px 12px rgba(99,102,241,0.35)' }}
+                  style={{ background: '#6366f1', boxShadow: 'none' }}
                 >
                   <Plus className="h-4 w-4" />
                   Create Task

@@ -13,26 +13,26 @@ import { useStudy } from '../contexts/StudyContext';
 /* ── reusable inline-style helpers ── */
 const neo = {
   card: {
-    background: '#eef0f5',
-    boxShadow: '8px 8px 20px rgba(174,180,200,0.6), -8px -8px 20px rgba(255,255,255,0.85)',
+    background: '#ffffff',
+    boxShadow: 'none',
     border: '1px solid rgba(255,255,255,0.8)',
     borderRadius: '22px',
   },
   cardSm: {
-    background: '#eef0f5',
-    boxShadow: '5px 5px 12px rgba(174,180,200,0.55), -5px -5px 12px rgba(255,255,255,0.85)',
+    background: '#ffffff',
+    boxShadow: 'none',
     border: '1px solid rgba(255,255,255,0.75)',
     borderRadius: '16px',
   },
   inset: {
-    background: '#e4e6ef',
-    boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)',
+    background: '#f8fafc',
+    boxShadow: 'none',
     borderRadius: '12px',
-    border: '1px solid rgba(255,255,255,0.4)',
+    border: '1px solid #cbd5e1',
   },
   progressTrack: {
-    background: '#e4e6ef',
-    boxShadow: 'inset 2px 2px 5px rgba(174,180,200,0.55), inset -2px -2px 5px rgba(255,255,255,0.85)',
+    background: '#f8fafc',
+    boxShadow: 'none',
     borderRadius: '999px',
     overflow: 'hidden',
     height: '8px',
@@ -128,8 +128,8 @@ const OverviewHub = () => {
         className="relative overflow-hidden p-7 text-white"
         style={{
           borderRadius: '28px',
-          background: 'linear-gradient(135deg, #0f1223 0%, #1a1f45 50%, #0e1535 100%)',
-          boxShadow: '10px 10px 30px rgba(99,102,241,0.25), -4px -4px 20px rgba(255,255,255,0.5)',
+          background: '#0f1223',
+          boxShadow: 'none',
         }}
       >
         {/* Glow orbs */}
@@ -149,7 +149,7 @@ const OverviewHub = () => {
             </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
               {greeting},{' '}
-              <span style={{ background: 'linear-gradient(90deg, #a5b4fc, #c4b5fd)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <span style={{ background: '#a5b4fc', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                 {user?.username || 'Learner'}
               </span> 👋
             </h1>
@@ -160,10 +160,10 @@ const OverviewHub = () => {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
             <Link to="/study"
               className="inline-flex items-center px-4 py-2.5 rounded-xl text-sm font-bold text-slate-900"
-              style={{ background: 'white', boxShadow: '4px 4px 10px rgba(0,0,0,0.15)' }}>
+              style={{ background: 'white', boxShadow: 'none' }}>
               <GraduationCap className="h-4 w-4 mr-2 text-indigo-600" />
               Start Studying
             </Link>
@@ -189,7 +189,7 @@ const OverviewHub = () => {
 
             {card.progress !== undefined && (
               <div style={{ ...neo.progressTrack, marginTop: '0.5rem' }}>
-                <div style={{ width: `${card.progress}%`, height: '100%', borderRadius: '999px', background: 'linear-gradient(90deg, #6366f1, #8b5cf6)', transition: 'width 0.6s ease' }} />
+                <div style={{ width: `${card.progress}%`, height: '100%', borderRadius: '999px', background: '#6366f1', transition: 'width 0.6s ease' }} />
               </div>
             )}
 
@@ -221,8 +221,8 @@ const OverviewHub = () => {
             className="relative overflow-hidden p-6 text-white"
             style={{
               borderRadius: '22px',
-              background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)',
-              boxShadow: '8px 8px 20px rgba(99,102,241,0.25), -4px -4px 14px rgba(255,255,255,0.5)',
+              background: '#1e1b4b',
+              boxShadow: 'none',
             }}
           >
             <div className="absolute inset-0 pointer-events-none"
@@ -252,8 +252,8 @@ const OverviewHub = () => {
                     onClick={() => setIsTimerRunning(!isTimerRunning)}
                     className="inline-flex items-center px-6 py-3 rounded-2xl text-sm font-bold text-white"
                     style={isTimerRunning
-                      ? { background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(245,158,11,0.4)' }
-                      : { background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '4px 4px 12px rgba(16,185,129,0.4)' }
+                      ? { background: '#f59e0b', boxShadow: 'none' }
+                      : { background: '#10b981', boxShadow: 'none' }
                     }
                   >
                     {isTimerRunning ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
@@ -338,7 +338,7 @@ const OverviewHub = () => {
               />
               <button type="submit"
                 className="px-3.5 py-2 rounded-xl text-white flex items-center justify-center"
-                style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '3px 3px 8px rgba(99,102,241,0.35)' }}>
+                style={{ background: '#6366f1', boxShadow: 'none' }}>
                 <Plus className="h-4 w-4" />
               </button>
             </form>
@@ -395,7 +395,7 @@ const OverviewHub = () => {
                         <span className="text-slate-800">₹{amount.toLocaleString()} <span className="text-slate-400">({pct}%)</span></span>
                       </div>
                       <div style={neo.progressTrack}>
-                        <div style={{ width: `${pct}%`, height: '100%', background: 'linear-gradient(90deg, #10b981, #059669)', borderRadius: '999px', transition: 'width 0.6s ease' }} />
+                        <div style={{ width: `${pct}%`, height: '100%', background: '#10b981', borderRadius: '999px', transition: 'width 0.6s ease' }} />
                       </div>
                     </div>
                   );

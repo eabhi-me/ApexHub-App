@@ -5,8 +5,8 @@ import { Eye, EyeOff, Sparkles, UserPlus, ArrowRight, KeyRound, CheckCircle } fr
 import { useAuth } from '../contexts/AuthContext';
 
 const neoInset = {
-  background: '#e4e6ef',
-  boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)',
+  background: '#f8fafc',
+  boxShadow: 'none',
   borderRadius: '12px',
   border: '1px solid rgba(255,255,255,0.5)',
   width: '100%',
@@ -62,7 +62,7 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 py-10 relative overflow-hidden"
-      style={{ background: 'linear-gradient(135deg, #e8eaf2 0%, #eef0f5 50%, #e6e8f0 100%)' }}>
+      style={{ background: '#e8eaf2' }}>
 
       {/* Ambient glows */}
       <div className="absolute top-0 right-0 w-80 h-80 rounded-full pointer-events-none"
@@ -77,8 +77,8 @@ const Register = () => {
           <div
             className="inline-flex h-16 w-16 rounded-2xl items-center justify-center mx-auto"
             style={{
-              background: 'linear-gradient(135deg, #8b5cf6, #6366f1)',
-              boxShadow: '6px 6px 16px rgba(139,92,246,0.4), -4px -4px 12px rgba(255,255,255,0.6)',
+              background: '#8b5cf6',
+              boxShadow: 'none',
             }}
           >
             <UserPlus className="h-8 w-8 text-white" />
@@ -91,8 +91,8 @@ const Register = () => {
         <div
           className="flex items-center justify-between px-4 py-3 rounded-2xl text-xs"
           style={{
-            background: '#eef0f5',
-            boxShadow: '5px 5px 12px rgba(174,180,200,0.55), -5px -5px 12px rgba(255,255,255,0.85)',
+            background: '#ffffff',
+            boxShadow: 'none',
             border: '1px solid rgba(255,255,255,0.75)',
           }}
         >
@@ -107,9 +107,9 @@ const Register = () => {
         <div
           className="p-7"
           style={{
-            background: '#eef0f5',
+            background: '#ffffff',
             borderRadius: '28px',
-            boxShadow: '10px 10px 30px rgba(174,180,200,0.6), -10px -10px 30px rgba(255,255,255,0.85)',
+            boxShadow: 'none',
             border: '1px solid rgba(255,255,255,0.8)',
           }}
         >
@@ -176,7 +176,7 @@ const Register = () => {
               type="submit" disabled={loading}
               className="w-full py-3.5 rounded-2xl text-sm font-bold text-white flex items-center justify-center gap-2 mt-2"
               style={{
-                background: loading ? '#9ba5bc' : 'linear-gradient(135deg, #8b5cf6, #6366f1)',
+                background: loading ? '#9ba5bc' : '#8b5cf6',
                 boxShadow: loading ? 'none' : '4px 4px 12px rgba(139,92,246,0.4), -2px -2px 8px rgba(255,255,255,0.5)',
                 cursor: loading ? 'not-allowed' : 'pointer',
               }}
@@ -199,8 +199,8 @@ const Register = () => {
             type="button" onClick={handleDemoAccess}
             className="w-full py-3 rounded-2xl text-sm font-bold text-violet-700 flex items-center justify-center gap-2"
             style={{
-              background: '#eef0f5',
-              boxShadow: '4px 4px 10px rgba(174,180,200,0.5), -4px -4px 10px rgba(255,255,255,0.85)',
+              background: '#ffffff',
+              boxShadow: 'none',
               border: '1px solid rgba(255,255,255,0.7)',
             }}
           >
@@ -218,8 +218,8 @@ const Register = () => {
         <div
           className="p-4 rounded-2xl text-xs text-slate-500"
           style={{
-            background: '#eef0f5',
-            boxShadow: '5px 5px 12px rgba(174,180,200,0.55), -5px -5px 12px rgba(255,255,255,0.85)',
+            background: '#ffffff',
+            boxShadow: 'none',
             border: '1px solid rgba(255,255,255,0.75)',
           }}
         >

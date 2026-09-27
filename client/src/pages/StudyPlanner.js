@@ -7,10 +7,10 @@ import { useStudy } from '../contexts/StudyContext';
 
 /* ── style helpers ── */
 const neo = {
-  card: { background: '#eef0f5', boxShadow: '8px 8px 20px rgba(174,180,200,0.6), -8px -8px 20px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.8)', borderRadius: '22px' },
-  cardSm: { background: '#eef0f5', boxShadow: '5px 5px 12px rgba(174,180,200,0.55), -5px -5px 12px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.75)', borderRadius: '16px' },
-  inset: { background: '#e4e6ef', boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.4)' },
-  progress: { background: '#e4e6ef', boxShadow: 'inset 2px 2px 5px rgba(174,180,200,0.55), inset -2px -2px 5px rgba(255,255,255,0.85)', borderRadius: '999px', overflow: 'hidden', height: '8px' },
+  card: { background: '#ffffff', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.8)', borderRadius: '22px' },
+  cardSm: { background: '#ffffff', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.75)', borderRadius: '16px' },
+  inset: { background: '#f8fafc', boxShadow: 'none', borderRadius: '12px', border: '1px solid #cbd5e1' },
+  progress: { background: '#f8fafc', boxShadow: 'none', borderRadius: '999px', overflow: 'hidden', height: '8px' },
 };
 
 const NeoInput = ({ ...props }) => (
@@ -29,7 +29,7 @@ const Modal = ({ title, onClose, children }) => (
   <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
     style={{ background: 'rgba(15,18,35,0.55)', backdropFilter: 'blur(6px)' }}>
     <div className="w-full max-w-md max-h-[90vh] overflow-y-auto p-7 animate-scaleIn custom-scrollbar"
-      style={{ ...neo.card, borderRadius: '28px', boxShadow: '20px 20px 50px rgba(174,180,200,0.65), -10px -10px 30px rgba(255,255,255,0.9)' }}>
+      style={{ ...neo.card, borderRadius: '28px', boxShadow: 'none' }}>
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-black text-slate-800">{title}</h3>
         <button onClick={onClose} className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-rose-500" style={neo.cardSm}>
@@ -43,7 +43,7 @@ const Modal = ({ title, onClose, children }) => (
 
 const GradBtn = ({ color1 = '#6366f1', color2 = '#8b5cf6', className = '', disabled, children, ...props }) => (
   <button {...props} disabled={disabled} className={`font-bold text-white rounded-2xl flex items-center justify-center gap-2 ${className}`}
-    style={{ background: disabled ? '#9ba5bc' : `linear-gradient(135deg, ${color1}, ${color2})`, boxShadow: disabled ? 'none' : `4px 4px 12px ${color1}40`, cursor: disabled ? 'not-allowed' : 'pointer' }}>
+    style={{ background: disabled ? '#9ba5bc' : `linear-gradient(135deg, ${color1}, ${color2})`, boxShadow: 'none', cursor: disabled ? 'not-allowed' : 'pointer' }}>
     {children}
   </button>
 );
@@ -134,7 +134,7 @@ const StudyPlanner = () => {
       </div>
 
       {/* ── STAT CARDS ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Total Hours',    value: `${totalHours}h`,            sub: `${sessions.length} sprints`,          c1: '#6366f1', c2: '#8b5cf6', icon: Clock },
           { label: 'Study Streak',   value: `${streak} days`,            sub: 'Consecutive study days',               c1: '#f59e0b', c2: '#d97706', icon: Flame },
@@ -145,7 +145,7 @@ const StudyPlanner = () => {
             <div className="flex items-center justify-between mb-3">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{label}</span>
               <div className="h-9 w-9 rounded-xl flex items-center justify-center text-white"
-                style={{ background: `linear-gradient(135deg, ${c1}, ${c2})`, boxShadow: `3px 3px 8px ${c1}40` }}>
+                style={{ background: `linear-gradient(135deg, ${c1}, ${c2})`, boxShadow: 'none' }}>
                 <Icon className="h-4.5 w-4.5" style={{ height: '1.1rem', width: '1.1rem' }} />
               </div>
             </div>
@@ -166,8 +166,8 @@ const StudyPlanner = () => {
             className="relative overflow-hidden p-7"
             style={{
               borderRadius: '28px',
-              background: 'linear-gradient(145deg, #0f1223, #1e1b4b)',
-              boxShadow: '12px 12px 30px rgba(99,102,241,0.25), -4px -4px 20px rgba(255,255,255,0.5)',
+              background: '#0f1223',
+              boxShadow: 'none',
             }}
           >
             {/* Glow orb */}
@@ -185,9 +185,9 @@ const StudyPlanner = () => {
                   <button key={mode} onClick={() => switchTimerMode(mode)}
                     className="flex-1 py-2 rounded-xl text-xs font-bold transition-all"
                     style={timerMode === mode ? {
-                      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                      background: '#6366f1',
                       color: 'white',
-                      boxShadow: '3px 3px 8px rgba(99,102,241,0.4)',
+                      boxShadow: 'none',
                     } : { color: 'rgba(165,180,252,0.6)' }}>
                     {label} ({mins}m)
                   </button>
@@ -243,8 +243,8 @@ const StudyPlanner = () => {
                   onClick={() => setIsTimerRunning(!isTimerRunning)}
                   className="flex-1 py-3.5 rounded-2xl text-sm font-black text-white flex items-center justify-center gap-2"
                   style={isTimerRunning
-                    ? { background: 'linear-gradient(135deg, #f59e0b, #d97706)', boxShadow: '4px 4px 12px rgba(245,158,11,0.4)' }
-                    : { background: 'linear-gradient(135deg, #10b981, #059669)', boxShadow: '4px 4px 12px rgba(16,185,129,0.4)' }
+                    ? { background: '#f59e0b', boxShadow: 'none' }
+                    : { background: '#10b981', boxShadow: 'none' }
                   }>
                   {isTimerRunning ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
                   {isTimerRunning ? 'Pause Session' : 'Start Focus'}
@@ -277,7 +277,7 @@ const StudyPlanner = () => {
                 <div key={s._id} style={neo.cardSm} className="flex items-center justify-between px-4 py-3 gap-2">
                   <div className="flex items-center gap-2.5 min-w-0">
                     <div className="h-8 w-8 rounded-xl flex items-center justify-center text-white flex-shrink-0"
-                      style={{ background: `linear-gradient(135deg, ${s.subjectId?.color || '#6366f1'}, ${s.subjectId?.color || '#8b5cf6'})`, boxShadow: `2px 2px 6px ${s.subjectId?.color || '#6366f1'}40` }}>
+                      style={{ background: `linear-gradient(135deg, ${s.subjectId?.color || '#6366f1'}, ${s.subjectId?.color || '#8b5cf6'})`, boxShadow: 'none' }}>
                       <Clock className="h-3.5 w-3.5" />
                     </div>
                     <div className="min-w-0">
@@ -326,7 +326,7 @@ const StudyPlanner = () => {
                     >
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="h-10 w-10 rounded-xl flex items-center justify-center text-white font-black text-sm flex-shrink-0"
-                          style={{ background: `linear-gradient(135deg, ${subject.color || '#6366f1'}, ${subject.color || '#8b5cf6'})`, boxShadow: `3px 3px 8px ${subject.color || '#6366f1'}40` }}>
+                          style={{ background: `linear-gradient(135deg, ${subject.color || '#6366f1'}, ${subject.color || '#8b5cf6'})`, boxShadow: 'none' }}>
                           {subject.name.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
@@ -346,7 +346,7 @@ const StudyPlanner = () => {
                         )}
                         <button onClick={e => { e.stopPropagation(); deleteSubject(subject._id); }}
                           className="h-8 w-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-all"
-                          style={{ background: '#eef0f5', boxShadow: '2px 2px 5px rgba(174,180,200,0.4), -2px -2px 5px rgba(255,255,255,0.85)' }}
+                          style={{ background: '#ffffff', boxShadow: 'none' }}
                           onMouseEnter={e => { e.currentTarget.style.background = '#f43f5e'; }}
                           onMouseLeave={e => { e.currentTarget.style.background = '#eef0f5'; }}>
                           <Trash2 className="h-3.5 w-3.5" />
@@ -393,7 +393,7 @@ const StudyPlanner = () => {
                           />
                           <button onClick={() => handleAddTopic(subject._id)}
                             className="px-3 py-2 rounded-xl text-white text-xs font-bold"
-                            style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '2px 2px 6px rgba(99,102,241,0.35)' }}>
+                            style={{ background: '#6366f1', boxShadow: 'none' }}>
                             <Plus className="h-3.5 w-3.5" />
                           </button>
                         </div>
@@ -452,7 +452,7 @@ const StudyPlanner = () => {
                       )}
                       <button onClick={() => deleteDeadline(item._id)}
                         className="h-7 w-7 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-all"
-                        style={{ background: '#eef0f5', boxShadow: '2px 2px 5px rgba(174,180,200,0.4), -2px -2px 5px rgba(255,255,255,0.85)' }}
+                        style={{ background: '#ffffff', boxShadow: 'none' }}
                         onMouseEnter={e => { e.currentTarget.style.background = '#f43f5e'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = '#eef0f5'; }}>
                         <Trash2 className="h-3 w-3" />

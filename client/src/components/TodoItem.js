@@ -46,7 +46,7 @@ const TodoItem = ({ todo }) => {
     <div
       className="transition-all duration-200 hover:-translate-y-0.5"
       style={{
-        background: '#eef0f5',
+        background: '#ffffff',
         borderRadius: '18px',
         boxShadow: todo.completed
           ? 'inset 3px 3px 7px rgba(174,180,200,0.4), inset -3px -3px 7px rgba(255,255,255,0.7)'
@@ -64,11 +64,11 @@ const TodoItem = ({ todo }) => {
             disabled={loading}
             className="flex-shrink-0 mt-0.5 h-5 w-5 rounded-lg flex items-center justify-center transition-all"
             style={todo.completed ? {
-              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-              boxShadow: '2px 2px 5px rgba(99,102,241,0.4)',
+              background: '#6366f1',
+              boxShadow: 'none',
             } : {
-              background: '#eef0f5',
-              boxShadow: 'inset 2px 2px 5px rgba(174,180,200,0.5), inset -2px -2px 5px rgba(255,255,255,0.85)',
+              background: '#ffffff',
+              boxShadow: 'none',
               border: '1px solid rgba(255,255,255,0.5)',
             }}
           >
@@ -122,8 +122,8 @@ const TodoItem = ({ todo }) => {
                     key={title} onClick={onClick} title={title}
                     className="h-8 w-8 rounded-xl flex items-center justify-center text-slate-400 hover:text-white transition-all"
                     style={{
-                      background: '#eef0f5',
-                      boxShadow: '2px 2px 6px rgba(174,180,200,0.45), -2px -2px 6px rgba(255,255,255,0.85)',
+                      background: '#ffffff',
+                      boxShadow: 'none',
                       border: '1px solid rgba(255,255,255,0.7)',
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = color; e.currentTarget.style.boxShadow = `2px 2px 8px ${color}60`; e.currentTarget.querySelector('svg').style.color = 'white'; }}

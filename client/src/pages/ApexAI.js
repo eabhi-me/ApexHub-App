@@ -5,16 +5,16 @@ import api from '../utils/api';
 
 const neo = {
   card: {
-    background: '#eef0f5',
-    boxShadow: '8px 8px 20px rgba(174,180,200,0.6), -8px -8px 20px rgba(255,255,255,0.85)',
+    background: '#ffffff',
+    boxShadow: 'none',
     border: '1px solid rgba(255,255,255,0.8)',
     borderRadius: '22px',
   },
   inset: {
-    background: '#e4e6ef',
-    boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)',
+    background: '#f8fafc',
+    boxShadow: 'none',
     borderRadius: '999px',
-    border: '1px solid rgba(255,255,255,0.4)',
+    border: '1px solid #cbd5e1',
   },
 };
 
@@ -92,9 +92,9 @@ const ApexAI = () => {
       style={{
         height: 'calc(100vh - 8rem)',
         minHeight: '600px',
-        background: '#eef0f5',
+        background: '#ffffff',
         borderRadius: '28px',
-        boxShadow: '12px 12px 30px rgba(174,180,200,0.6), -12px -12px 30px rgba(255,255,255,0.9)',
+        boxShadow: 'none',
         border: '1px solid rgba(255,255,255,0.85)',
       }}
     >
@@ -103,7 +103,7 @@ const ApexAI = () => {
       <div
         className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #0f1223 0%, #1a1f45 60%, #0e1535 100%)',
+          background: '#0f1223',
           borderRadius: '28px 28px 0 0',
         }}
       >
@@ -117,8 +117,8 @@ const ApexAI = () => {
           <div
             className="h-12 w-12 rounded-2xl flex items-center justify-center"
             style={{
-              background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-              boxShadow: '4px 4px 12px rgba(99,102,241,0.5)',
+              background: '#6366f1',
+              boxShadow: 'none',
               animation: 'pulse 3s ease-in-out infinite',
             }}
           >
@@ -144,9 +144,9 @@ const ApexAI = () => {
               onClick={() => setViewMode(mode)}
               className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-300"
               style={viewMode === mode ? {
-                background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                background: '#6366f1',
                 color: 'white',
-                boxShadow: '3px 3px 10px rgba(99,102,241,0.4)',
+                boxShadow: 'none',
               } : {
                 color: 'rgba(165,180,252,0.8)',
                 background: 'transparent',
@@ -171,12 +171,12 @@ const ApexAI = () => {
                   <div
                     className="flex-shrink-0 h-9 w-9 rounded-2xl flex items-center justify-center"
                     style={msg.role === 'user' ? {
-                      background: '#eef0f5',
-                      boxShadow: '3px 3px 8px rgba(174,180,200,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
+                      background: '#ffffff',
+                      boxShadow: 'none',
                       border: '1px solid rgba(255,255,255,0.7)',
                     } : {
-                      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                      boxShadow: '3px 3px 8px rgba(99,102,241,0.35)',
+                      background: '#6366f1',
+                      boxShadow: 'none',
                     }}
                   >
                     {msg.role === 'user'
@@ -189,13 +189,13 @@ const ApexAI = () => {
                   <div
                     className="px-5 py-3.5"
                     style={msg.role === 'user' ? {
-                      background: 'linear-gradient(135deg, #1e1b4b, #312e81)',
+                      background: '#1e1b4b',
                       borderRadius: '20px 6px 20px 20px',
                       color: 'white',
-                      boxShadow: '4px 4px 12px rgba(30,27,75,0.3)',
+                      boxShadow: 'none',
                     } : {
-                      background: '#eef0f5',
-                      boxShadow: '5px 5px 14px rgba(174,180,200,0.55), -5px -5px 14px rgba(255,255,255,0.85)',
+                      background: '#ffffff',
+                      boxShadow: 'none',
                       border: '1px solid rgba(255,255,255,0.75)',
                       borderRadius: '6px 20px 20px 20px',
                       color: '#374151',
@@ -213,13 +213,13 @@ const ApexAI = () => {
                 <div className="flex gap-3">
                   <div
                     className="h-9 w-9 rounded-2xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: 'linear-gradient(135deg, #6366f1, #8b5cf6)', boxShadow: '3px 3px 8px rgba(99,102,241,0.35)' }}
+                    style={{ background: '#6366f1', boxShadow: 'none' }}
                   >
                     <Bot className="h-4 w-4 text-white" />
                   </div>
                   <div
                     className="px-5 py-4 flex items-center gap-2"
-                    style={{ background: '#eef0f5', boxShadow: '5px 5px 14px rgba(174,180,200,0.55), -5px -5px 14px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.75)', borderRadius: '6px 20px 20px 20px' }}
+                    style={{ background: '#ffffff', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.75)', borderRadius: '6px 20px 20px 20px' }}
                   >
                     {[0, 150, 300].map(delay => (
                       <div key={delay} className="h-2 w-2 rounded-full animate-bounce"
@@ -242,7 +242,7 @@ const ApexAI = () => {
                     key={i}
                     onClick={() => handleSendChat(prompt)}
                     className="text-xs font-bold text-slate-600 flex items-center gap-1.5 px-4 py-2 rounded-2xl hover:text-indigo-700 transition-colors"
-                    style={{ background: '#eef0f5', boxShadow: '3px 3px 7px rgba(174,180,200,0.5), -3px -3px 7px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.7)' }}
+                    style={{ background: '#ffffff', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.7)' }}
                   >
                     <span>{prompt}</span>
                     <ArrowRight className="h-3 w-3 opacity-50" />
@@ -268,11 +268,11 @@ const ApexAI = () => {
                 className="h-12 w-12 rounded-2xl flex items-center justify-center text-white flex-shrink-0"
                 style={isChatLoading || !input.trim() ? {
                   background: '#d1d5db',
-                  boxShadow: 'inset 2px 2px 5px rgba(174,180,200,0.4)',
+                  boxShadow: 'none',
                   cursor: 'not-allowed',
                 } : {
-                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                  boxShadow: '4px 4px 12px rgba(99,102,241,0.4), -2px -2px 8px rgba(255,255,255,0.5)',
+                  background: '#6366f1',
+                  boxShadow: 'none',
                 }}
               >
                 <Send className="h-5 w-5" />
@@ -290,8 +290,8 @@ const ApexAI = () => {
               <div
                 className="h-28 w-28 rounded-3xl flex items-center justify-center"
                 style={{
-                  background: '#eef0f5',
-                  boxShadow: '12px 12px 30px rgba(174,180,200,0.6), -12px -12px 30px rgba(255,255,255,0.9)',
+                  background: '#ffffff',
+                  boxShadow: 'none',
                   border: '1px solid rgba(255,255,255,0.8)',
                 }}
               >
@@ -306,8 +306,8 @@ const ApexAI = () => {
                   onClick={generateDailyPlan}
                   className="px-8 py-4 rounded-2xl text-white font-bold text-sm flex items-center gap-3 mx-auto"
                   style={{
-                    background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                    boxShadow: '6px 6px 16px rgba(99,102,241,0.4), -3px -3px 10px rgba(255,255,255,0.6)',
+                    background: '#6366f1',
+                    boxShadow: 'none',
                   }}
                 >
                   <Sparkles className="h-5 w-5" />
@@ -320,7 +320,7 @@ const ApexAI = () => {
             <div className="flex flex-col items-center justify-center h-full text-center gap-6">
               <div
                 className="relative h-24 w-24 rounded-full"
-                style={{ background: '#eef0f5', boxShadow: '8px 8px 20px rgba(174,180,200,0.6), -8px -8px 20px rgba(255,255,255,0.9)' }}
+                style={{ background: '#ffffff', boxShadow: 'none' }}
               >
                 <div className="absolute inset-2 rounded-full border-4 border-transparent animate-spin"
                   style={{ borderTopColor: '#6366f1' }} />
@@ -347,7 +347,7 @@ const ApexAI = () => {
                 <button
                   onClick={generateDailyPlan}
                   className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-bold text-slate-600"
-                  style={{ background: '#eef0f5', boxShadow: '4px 4px 10px rgba(174,180,200,0.5), -4px -4px 10px rgba(255,255,255,0.85)', border: '1px solid rgba(255,255,255,0.7)' }}
+                  style={{ background: '#ffffff', boxShadow: 'none', border: '1px solid rgba(255,255,255,0.7)' }}
                 >
                   <Sparkles className="h-4 w-4 text-amber-500" />
                   Regenerate
@@ -358,7 +358,7 @@ const ApexAI = () => {
               <div className="relative pl-6 sm:pl-10">
                 <div
                   className="absolute left-[2.8rem] sm:left-[3.7rem] top-4 bottom-4 w-0.5"
-                  style={{ background: 'linear-gradient(to bottom, #6366f1, #8b5cf6, #c4b5fd)', boxShadow: '0 0 8px rgba(99,102,241,0.3)' }}
+                  style={{ background: '#6366f1', boxShadow: '0 0 8px rgba(99,102,241,0.3)' }}
                 />
 
                 <div className="space-y-6">
@@ -384,7 +384,7 @@ const ApexAI = () => {
                           className="flex-shrink-0 h-16 w-16 rounded-2xl flex flex-col items-center justify-center z-10"
                           style={{
                             background: prioStyle.bg,
-                            boxShadow: `4px 4px 10px rgba(174,180,200,0.5), -4px -4px 10px rgba(255,255,255,0.85)`,
+                            boxShadow: 'none',
                             border: `2px solid ${prioStyle.accent}40`,
                           }}
                         >
@@ -395,9 +395,9 @@ const ApexAI = () => {
                         <div
                           style={{
                             flex: 1,
-                            background: '#eef0f5',
+                            background: '#ffffff',
                             borderRadius: '20px',
-                            boxShadow: '6px 6px 16px rgba(174,180,200,0.55), -6px -6px 16px rgba(255,255,255,0.85)',
+                            boxShadow: 'none',
                             border: '1px solid rgba(255,255,255,0.8)',
                             padding: '1.25rem 1.5rem',
                           }}
@@ -411,7 +411,7 @@ const ApexAI = () => {
                           <div className="flex items-center gap-3">
                             <span
                               className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-xl"
-                              style={{ background: '#eef0f5', boxShadow: '2px 2px 5px rgba(174,180,200,0.4), -2px -2px 5px rgba(255,255,255,0.85)', color: '#6b7280' }}
+                              style={{ background: '#ffffff', boxShadow: 'none', color: '#6b7280' }}
                             >
                               <Clock className="h-3.5 w-3.5" />
                               {item.estimatedDuration}m

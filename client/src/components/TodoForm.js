@@ -4,8 +4,8 @@ import { toast } from 'react-toastify';
 import { useTodos } from '../contexts/TodoContext';
 
 const neoInset = {
-  background: '#e4e6ef',
-  boxShadow: 'inset 3px 3px 7px rgba(174,180,200,0.5), inset -3px -3px 7px rgba(255,255,255,0.8)',
+  background: '#f8fafc',
+  boxShadow: 'none',
   borderRadius: '12px',
   border: '1px solid rgba(255,255,255,0.5)',
   width: '100%',
@@ -48,11 +48,11 @@ const TodoForm = ({ todo, onClose }) => {
       style={{ background: 'rgba(15,18,35,0.55)', backdropFilter: 'blur(6px)' }}
     >
       <div
-        className="w-full max-w-md p-7 animate-scaleIn"
+        className="w-full max-w-md p-7 animate-scaleIn max-h-[85vh] overflow-y-auto custom-scrollbar"
         style={{
-          background: '#eef0f5',
+          background: '#ffffff',
           borderRadius: '28px',
-          boxShadow: '20px 20px 50px rgba(174,180,200,0.65), -10px -10px 30px rgba(255,255,255,0.9)',
+          boxShadow: 'none',
           border: '1px solid rgba(255,255,255,0.8)',
         }}
       >
@@ -65,8 +65,8 @@ const TodoForm = ({ todo, onClose }) => {
             onClick={onClose}
             className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-rose-500 transition-colors"
             style={{
-              background: '#eef0f5',
-              boxShadow: '3px 3px 7px rgba(174,180,200,0.5), -3px -3px 7px rgba(255,255,255,0.85)',
+              background: '#ffffff',
+              boxShadow: 'none',
               border: '1px solid rgba(255,255,255,0.7)',
             }}
           >
@@ -119,11 +119,11 @@ const TodoForm = ({ todo, onClose }) => {
                   style={formData.priority === p.value ? {
                     background: `linear-gradient(135deg, ${p.activeBg}, ${p.activeBg}dd)`,
                     color: 'white',
-                    boxShadow: `3px 3px 8px ${p.activeBg}50`,
+                    boxShadow: 'none',
                   } : {
-                    background: '#eef0f5',
+                    background: '#ffffff',
                     color: p.color,
-                    boxShadow: '2px 2px 6px rgba(174,180,200,0.45), -2px -2px 6px rgba(255,255,255,0.85)',
+                    boxShadow: 'none',
                     border: '1px solid rgba(255,255,255,0.7)',
                   }}
                 >
@@ -154,8 +154,8 @@ const TodoForm = ({ todo, onClose }) => {
               type="button" onClick={onClose}
               className="flex-1 py-3 rounded-xl text-sm font-bold text-slate-600"
               style={{
-                background: '#eef0f5',
-                boxShadow: '3px 3px 8px rgba(174,180,200,0.5), -3px -3px 8px rgba(255,255,255,0.85)',
+                background: '#ffffff',
+                boxShadow: 'none',
                 border: '1px solid rgba(255,255,255,0.7)',
               }}
             >
@@ -165,7 +165,7 @@ const TodoForm = ({ todo, onClose }) => {
               type="submit" disabled={loading}
               className="flex-1 py-3 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-2"
               style={{
-                background: loading ? '#9ba5bc' : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                background: loading ? '#9ba5bc' : '#6366f1',
                 boxShadow: loading ? 'none' : '4px 4px 12px rgba(99,102,241,0.4)',
               }}
             >
