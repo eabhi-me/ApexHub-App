@@ -1,0 +1,8 @@
+{
+  "projectId": "8470",
+  "projectSlug": "apexhub-app",
+  "clerkOrgId": "org_3KEzsnWzw02KQnIP2Vbm5o5IVOY",
+  "telemetryBindingId": "c7230c36-c339-43c2-91fd-45b166bd0d67",
+  "runtimeUrl": "http://localhost:3000/api/copilotkit",
+  "apiKeyDirectory": "client"
+}

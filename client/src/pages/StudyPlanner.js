@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   Flame, Clock, Play, Pause, RotateCcw, Plus, CheckCircle2, Circle,
   BookOpen, Trash2, X, ChevronDown, ChevronUp, Award, Calendar
@@ -25,21 +26,32 @@ const NeoSelect = ({ children, ...props }) => (
 
 const LabelTxt = ({ t }) => <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">{t}</label>;
 
-const Modal = ({ title, onClose, children }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-    style={{ background: 'rgba(15,18,35,0.55)', backdropFilter: 'blur(6px)' }}>
-    <div className="w-full max-w-md max-h-[90vh] overflow-y-auto p-7 animate-scaleIn custom-scrollbar"
-      style={{ ...neo.card, borderRadius: '28px', boxShadow: 'none' }}>
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-black text-slate-800">{title}</h3>
-        <button onClick={onClose} className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-rose-500" style={neo.cardSm}>
-          <X className="h-4 w-4" />
-        </button>
+const Modal = ({ title, onClose, children }) => {
+  return createPortal(
+    <div
+      className="modal-backdrop"
+      onClick={onClose}
+    >
+      <div
+        className="modal-card max-w-md max-h-[90vh] overflow-y-auto p-7 custom-scrollbar"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-black text-slate-800">{title}</h3>
+          <button
+            onClick={onClose}
+            className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            style={neo.cardSm}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        {children}
       </div>
-      {children}
-    </div>
-  </div>
-);
+    </div>,
+    document.body
+  );
+};
 
 const GradBtn = ({ color1 = '#6366f1', color2 = '#8b5cf6', className = '', disabled, children, ...props }) => (
   <button {...props} disabled={disabled} className={`font-bold text-white rounded-2xl flex items-center justify-center gap-2 ${className}`}

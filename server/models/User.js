@@ -22,6 +22,30 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     minlength: 6
+  },
+  aiConfig: {
+    mode: {
+      type: String,
+      enum: ['general', 'byok'],
+      default: 'general'
+    },
+    provider: {
+      type: String,
+      enum: ['gemini', 'openai', 'groq', 'openrouter'],
+      default: 'gemini'
+    },
+    apiKey: {
+      type: String,
+      default: ''
+    },
+    model: {
+      type: String,
+      default: ''
+    },
+    customEndpoint: {
+      type: String,
+      default: ''
+    }
   }
 }, {
   timestamps: true
@@ -45,10 +69,18 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Remove password from JSON output
+// Remove password from JSON output and mask API key
 userSchema.methods.toJSON = function() {
   const userObject = this.toObject();
   delete userObject.password;
+  if (userObject.aiConfig) {
+    const rawKey = userObject.aiConfig.apiKey;
+    userObject.aiConfig.hasCustomKey = Boolean(rawKey && rawKey.trim().length > 0);
+    userObject.aiConfig.maskedKey = (rawKey && rawKey.length > 8)
+      ? `${rawKey.slice(0, 4)}••••${rawKey.slice(-4)}`
+      : (rawKey ? '••••••••' : '');
+    delete userObject.aiConfig.apiKey;
+  }
   return userObject;
 };
 

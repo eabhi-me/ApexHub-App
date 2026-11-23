@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X, Calendar } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useTodos } from '../contexts/TodoContext';
@@ -42,19 +43,14 @@ const TodoForm = ({ todo, onClose }) => {
     finally { setLoading(false); }
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(15,18,35,0.55)', backdropFilter: 'blur(6px)' }}
+      className="modal-backdrop"
+      onClick={onClose}
     >
       <div
-        className="w-full max-w-md p-7 animate-scaleIn max-h-[85vh] overflow-y-auto custom-scrollbar"
-        style={{
-          background: '#ffffff',
-          borderRadius: '28px',
-          boxShadow: 'none',
-          border: '1px solid rgba(255,255,255,0.8)',
-        }}
+        className="modal-card max-w-md p-7 max-h-[85vh] overflow-y-auto custom-scrollbar"
+        onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -175,7 +171,8 @@ const TodoForm = ({ todo, onClose }) => {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

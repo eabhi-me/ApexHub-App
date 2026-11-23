@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import {
   TrendingUp, TrendingDown, Plus, Download, Search, Trash2,
   PiggyBank, Target, CreditCard, X, ArrowDownLeft, ArrowUpRight,
@@ -50,23 +51,32 @@ const NeoSelect = ({ style, ...props }) => (
   />
 );
 
-const Modal = ({ title, onClose, children }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-    style={{ background: 'rgba(15,18,35,0.55)', backdropFilter: 'blur(6px)' }}>
-    <div className="w-full max-w-md p-7 animate-scaleIn max-h-[85vh] overflow-y-auto custom-scrollbar"
-      style={{ ...neo.card, borderRadius: '28px', boxShadow: 'none' }}>
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-black text-slate-800">{title}</h3>
-        <button onClick={onClose}
-          className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-rose-500"
-          style={{ ...neo.cardSm }}>
-          <X className="h-4 w-4" />
-        </button>
+const Modal = ({ title, onClose, children }) => {
+  return createPortal(
+    <div
+      className="modal-backdrop"
+      onClick={onClose}
+    >
+      <div
+        className="modal-card max-w-md p-7 max-h-[85vh] overflow-y-auto custom-scrollbar"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-black text-slate-800">{title}</h3>
+          <button
+            onClick={onClose}
+            className="h-9 w-9 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            style={{ ...neo.cardSm }}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+        {children}
       </div>
-      {children}
-    </div>
-  </div>
-);
+    </div>,
+    document.body
+  );
+};
 
 const GradBtn = ({ children, color1 = '#10b981', color2 = '#059669', className = '', ...props }) => (
   <button

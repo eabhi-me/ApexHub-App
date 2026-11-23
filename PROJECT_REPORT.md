@@ -95,6 +95,30 @@
   - Attach multiple timestamped notes to any task.
   - Full CRUD operations on task-specific notes.
 
+### 5. 🤖 Apex AI Assistant & Daily Planner (`/ai`)
+- **Dual Operating Modes with Instant 1-Click Switching**:
+  - **⚡ General Method**: Zero-configuration mode powered by the platform's managed AI server key (Google Gemini Flash). Instant access without needing any personal credentials.
+  - **🔑 BYOK (Bring Your Own Key)**: Full sovereignty mode empowering users to bring their personal API keys from:
+    - **Google Gemini** (*Gemini 1.5 Flash, Gemini 2.0 Flash, Gemini 1.5 Pro*)
+    - **OpenAI** (*GPT-4o, GPT-4o Mini, GPT-3.5 Turbo*)
+    - **Groq** (*Llama 3.3 70B Versatile, Llama 3.1 8B Instant*)
+    - **OpenRouter** (*Universal access to 100+ open/closed models*)
+- **Interactive Mode Switcher & Real-Time Status**:
+  - Prominent top-bar switcher allowing users to toggle between General Method and BYOK in one click.
+  - Live status indicator displaying current engine, active model, and masked credential state.
+  - Graceful fallback guidance if BYOK is active without a configured key.
+- **BYOK Configuration & Real-Time Connection Testing**:
+  - Comprehensive settings modal for selecting provider, preset or custom model names, and optional custom endpoints.
+  - Integrated **Test Connection** capability providing real-time ping and verification against provider APIs before saving.
+  - Secure credential storage: Keys are stored securely in MongoDB, masked in JSON serialization (`AIza••••4X8B`), and can be revoked or updated anytime.
+- **Actionable Tool-Calling AI Assistant**:
+  - Conversational AI capable of executing authenticated backend side-effects via function calling:
+    - `create_task` — Adds new Kanban tasks with priority and due dates.
+    - `create_transaction` — Logs financial income or expense transactions in INR.
+    - `create_study_session` — Logs Pomodoro focus sessions and study topics.
+- **AI Daily Planner**:
+  - Synthesizes pending high/medium/low priority tasks into an optimized, time-blocked daily schedule with rationale and duration estimates.
+
 ---
 
 ## 🗄️ Database Schemas (Mongoose)
@@ -244,6 +268,13 @@
 - `POST /deadlines` — Create a deadline
 - `PUT /deadlines/:id` — Update deadline status or due date
 - `DELETE /deadlines/:id` — Delete a deadline
+
+#### 🤖 AI Assistant & Planner (`/api/ai`)
+- `GET /config` — Retrieve user's AI configuration (mode, provider, model, masked key, server status)
+- `POST /config` — Update active AI mode (general/byok), provider, model, custom endpoint, or API key
+- `POST /test` — Test connectivity and validity of a provider API key in real-time
+- `POST /chat` — Send conversation message and execute actions (tasks, transactions, study logs)
+- `POST /plan/day` — Synthesize pending tasks into an optimized time-blocked daily schedule
 
 ---
 

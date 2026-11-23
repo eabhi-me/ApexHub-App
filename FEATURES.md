@@ -866,27 +866,29 @@ Do not infer sensitive personal attributes.
 
 ------------------------------------------------------------------------
 
-# 24. AI Provider Abstraction
+# 24. AI Provider Abstraction & Dual Mode (General Method vs BYOK)
 
-Create a provider interface similar to:
+ApexHub AI supports two complementary operating modes:
+1. **General Method**: Zero-setup managed AI utilizing the server-configured environment key (`GEMINI_API_KEY`).
+2. **BYOK (Bring Your Own Key)**: User-provided API keys supporting multiple providers, custom model selection, endpoint overrides, and real-time connection verification.
+
+Users can seamlessly switch between General Method and BYOK directly from the top bar switcher in `/ai`.
+
+Create a provider interface in `server/services/aiService.js` similar to:
 
 ``` text
 LLMProvider
-  generate()
-  stream()
-  generateStructured()
-  generateWithTools()
+  executeChat({ provider, apiKey, model, customEndpoint, message })
+  executeDailyPlan({ provider, apiKey, model, customEndpoint, taskContext })
+  testConnection({ provider, apiKey, model, customEndpoint })
+  getDefaultModel(provider)
 ```
 
-Possible providers:
-
-``` text
-OpenAI
-Anthropic
-Google
-Local models
-Other providers
-```
+Supported providers:
+- **Google Gemini** (Gemini 1.5 Flash, Gemini 2.0 Flash, Gemini 1.5 Pro)
+- **OpenAI** (GPT-4o, GPT-4o Mini, GPT-3.5 Turbo)
+- **Groq** (Llama 3.3 70B, Llama 3.1 8B)
+- **OpenRouter** (Universal gateway)
 
 Provider-specific code should not be spread throughout the application.
 
